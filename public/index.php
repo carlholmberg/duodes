@@ -103,7 +103,7 @@ class Main {
     }
 }
 
-$f3=require('../lib/base.php');
+$f3=require('../lib/f3/base.php');
 
 $f3->config('../data/config.ini');
 
