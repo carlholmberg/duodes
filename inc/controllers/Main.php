@@ -18,10 +18,7 @@ class Main extends \controllers\Controller {
     }
 
     function index($app, $params) {
-        //$app->set('page', 'index');
-        //$template = \Template::instance();
-        //echo $template->render('index.html');
-//        echo \View::instance()->render('index.html');
+        $this->slots['pagetitle'] = '{Home}';
     }
     
     function collection($app, $params) {

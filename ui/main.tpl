@@ -21,7 +21,6 @@
   <body>
     <nav class="navbar-wrapper navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
-          <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
               <span class="sr-only">Toggle navigation</span>
@@ -29,10 +28,9 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><img src="img/duodes-liten.png" /></a>
+            <a class="navbar-brand" href="#base_href#"><img src="img/duodes-liten.png" /></a>
           </div>
 
-          <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
               <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
@@ -40,7 +38,7 @@
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> About Us<b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Company Details</a></li>
+                  <li><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                   <li><a href="#">Contact Us</a></li>
                 </ul>
               </li>

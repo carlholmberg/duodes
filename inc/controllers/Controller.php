@@ -46,13 +46,16 @@ function __($str, $values=false) {
 class Controller
 {
     public $tpl;
+    public $slots;
     
     function __construct() {
         $app = \Base::instance();
         $this->tpl = new \StampTE(file_get_contents($app->get('UI').'main.tpl'));
+        $this->slots = array('base_href' => '');
     }
     
     function __destruct() {
+        $this->tpl->injectAll($this->slots);
         echo preg_replace_callback('|\{.+?\}|', '\controllers\__', $this->tpl);
     }
 }

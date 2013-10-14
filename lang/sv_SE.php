@@ -3,6 +3,7 @@
 return array(
 	// Actions
 	'About' => 'Om',
+	'Home' => 'Hem',
 	'Return' => 'Återlämna',
 	'Borrow' => 'Låna',
 	'Add' => 'Lägg till',
