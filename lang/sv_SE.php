@@ -1,7 +1,8 @@
 <?php
 
-$lang = array(
+return array(
 	// Actions
+	'About' => 'Om',
 	'Return' => 'Återlämna',
 	'Borrow' => 'Låna',
 	'Add' => 'Lägg till',

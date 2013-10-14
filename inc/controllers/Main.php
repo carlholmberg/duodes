@@ -11,19 +11,28 @@
 namespace controllers;
 
 class Main extends \controllers\Controller {
-    function index() {
-        echo 'Index page';
+    
+    function minify($app, $params) {
+        $app->set('UI', $params['type'] . '/');
+        echo \Web::instance()->minify($_GET['files']);
+    }
+
+    function index($app, $params) {
+        //$app->set('page', 'index');
+        //$template = \Template::instance();
+        //echo $template->render('index.html');
+//        echo \View::instance()->render('index.html');
     }
     
-    function collection($f3, $params) {
+    function collection($app, $params) {
         echo 'Start for '.$params['collection'];
     }
     
-    function label($f3, $params) {
+    function label($app, $params) {
         echo 'Label-page';
     }
     
-    function copy($f3, $params) {
+    function copy($app, $params) {
         echo 'Copy-page';
     }
 
@@ -31,11 +40,11 @@ class Main extends \controllers\Controller {
         echo 'Title-page';
     }
     
-    function user($f3, $params) {
+    function user($app, $params) {
         echo 'User-page';
     }
     
-    function report($f3, $params) {
+    function report($app, $params) {
         echo 'Report-page';
     }
 }

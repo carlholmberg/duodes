@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Main Model class
+ * Collection model
  * 
  * @author Carl Holmberg
  * @copyright Copyright 2013
@@ -10,9 +10,6 @@
  */
 namespace models;
 
-class Model
-{
-
-    
+class Collection extends \models\Model {
     
 }

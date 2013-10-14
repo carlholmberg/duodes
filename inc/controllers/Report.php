@@ -11,6 +11,7 @@
 namespace controllers;
 
 class Report extends \controllers\Controller {
+
     function get($f3, $params) {
         if (isset($params['name'])) {
             if (isset($params['collection'])) {
@@ -21,6 +22,7 @@ class Report extends \controllers\Controller {
         } else {
             echo 'Show all reports';
         }
+
     }
     function post() {}
     function put() {}
