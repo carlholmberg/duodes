@@ -18,7 +18,9 @@ class Main extends \controllers\Controller {
     }
 
     function index($app, $params) {
+        $this->reqLevel(1);
         $this->slots['pagetitle'] = '{Home}';
+        $this->setPage('index');
     }
     
     function collection($app, $params) {

@@ -3,35 +3,48 @@
 date_default_timezone_set('Europe/Stockholm');
 
 $menu = array(
-    'opac' => array('link'=> 'opac',
-                    'title' => 'OPAC',
-                    'icon' => 'search'),
-    'circ' => array('link' => 'circ',
-                    'title' => 'Circ',
-                    'icon' => 'repeat'),
-    'titles' => array('link' => '#',
-                      'title' => 'Title',
-                      'icon' => 'book',
-                      'submenu' => array(
-        'newtitle' => array(
-            'link' => 'add',
-            'title' => 'New title',
-            'icon' => 'edit'),
-        'showtitles' => array(
-            'link' => 'titles',
-            'title' => 'Show titles',
+    array('title' => 'Circ',
+          'icon' => 'repeat',
+          'submenu' => array(
+        array('link' => 'circ/borrow',
+              'title' => '{Borrow}',
+              'icon' => 'edit'),
+        array('link' => 'circ/return',
+            'title' => '{Return}',
             'icon'=> 'tasks')
         )
     ),
-    'users' => array('link' => 'users',
-                     'title' => 'Show users',
-                     'icon' => ''),
-    'barcode' => array('link' => 'barcode',
-                       'title' => 'Barcodes',
-                       'icon' => ''),
-    'report' => array('link' => 'report',
-                      'title' => 'Reports',
-                      'icon' => '')
+    
+    array('title' => '{Titles}',
+          'icon' => 'book',
+          'submenu' => array(
+        array('link' => 'title/new',
+              'title' => '{New title}',
+              'icon' => 'edit'),
+        array('link' => 'titles',
+            'title' => '{Show titles}',
+            'icon'=> 'tasks')
+        )
+    ),
+    
+    array('title' => '{Users}',
+          'icon' => 'user',
+          'submenu' => array(
+        array('link' => 'user',
+              'title' => 'New title',
+              'icon' => 'edit'),
+        array('link' => 'user/all',
+            'title' => 'Show users',
+            'icon'=> 'tasks')
+        )
+    ),
+    
+    array('link' => 'barcode',
+          'title' => 'Barcodes',
+          'icon' => 'barcode'),
+    array('link' => 'report',
+          'title' => 'Reports',
+          'icon' => '')
 );
 
 $app = require('../lib/f3/base.php');
@@ -48,12 +61,15 @@ $app->set('TEMP', '../temp/');
 
 $app->set('LOC','../lang/');
 $app->set('LANG', 'sv_SE');
-
+$app->set('menu', $menu);
 
 $app->route('GET /', '\controllers\Main->index');
 //$app->route('GET /minify/@type', '\controllers\Main->minify', 3600);
 $app->route('GET /@page', '\controllers\Main->@page');
 $app->route('GET /report', '\controllers\Report');
+
+$app->route('GET|POST /login/@type', '\controllers\Login->@type');
+$app->route('GET /logout', '\controllers\Login->logout');
 
 
 // REST-API

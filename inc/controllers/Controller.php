@@ -16,21 +16,18 @@ require_once('../lib/StampTE.php');
 function __($str, $values=false) {
     
     $app = \Base::instance();
-    if (!$app->get('LANG_STRS'.$app->get('LANG'))) {
-        $app->set('LANG_STRS'.$app->get('LANG'), include($app->get('LOC').$app->get('LANG').'.php'));
+    $lkey = 'LANG_STRS'.$app->get('LANG');
+    if (!$app->get($lkey)) {
+        $app->set($lkey, include($app->get('LOC').$app->get('LANG').'.php'));
     }
-    $lang = $app->get('LANG_STRS'.$app->get('LANG'));
+    $lang = $app->get($lkey);
     
-    if (is_array($str)) {
-        $key = substr($str[0], 1, -1);
-    } else {
-        $key = $str;
-    }
+    $key = is_array($str)? substr($str[0], 1, -1) : $str;
 
 	if (array_key_exists($key, $lang)) {
 		$str = $lang[$key];
-		    if ($values && is_array($values)) {
-		        return vsprintf($str, $values);
+		if ($values && is_array($values)) {
+		    return vsprintf($str, $values);
 	    }
 	    return $str;
 	} else {
@@ -45,17 +42,75 @@ function __($str, $values=false) {
 
 class Controller
 {
+    public $ajax;
     public $tpl;
+    public $page;
     public $slots;
     
     function __construct() {
-        $app = \Base::instance();
-        $this->tpl = new \StampTE(file_get_contents($app->get('UI').'main.tpl'));
-        $this->slots = array('base_href' => '');
+        $this->app = \Base::instance();
+        $this->ajax = $this->app->get('AJAX');
+
+        if ($this->ajax) {
+            $this->slots = array();
+        } else {
+            $this->tpl = new \StampTE(file_get_contents($this->app->get('UI').'main.tpl'));
+            $this->slots = array('base_href' => 'http://localhost/duodes/public/');
+        }
+        
+    }
+    
+    function setPage($page) {
+        if (file_exists($this->app->get('UI').$page.'.tpl')) {
+            $this->page = new \StampTE(file_get_contents($this->app->get('UI').$page.'.tpl'));
+        }
+    }
+    
+    function reqLevel($lvl=0) {
+        if ($this->app->get('SESSION.account')) {
+            $account = $this->app->get('SESSION.account');
+            if ($account['level'] < $lvl) {
+                $this->tpl = new \StampTE(file_get_contents($this->app->get('UI').'login.tpl'));
+                $this->ajax = true;
+            }
+        } else {
+            $this->tpl = new \StampTE(file_get_contents($this->app->get('UI').'login.tpl'));
+            $this->ajax = true;
+        }
+    }
+    
+    function buildMenu() {
+        foreach($this->app->get('menu') as $menus) {
+            if (isset($menus['submenu'])) {
+                $menu = $this->tpl->get('dropdown')
+                    ->inject('title', $menus['title'])
+                    ->inject('icon', $menus['icon']);
+                    
+                foreach($menus['submenu'] as $menuitem) {
+                    $menu->glue('submenu', $this->tpl
+                                            ->get('menuitem')
+                                            ->injectAll($menuitem));
+                }
+                $this->tpl->glue('menuitem', $menu);
+            } else {
+                $this->tpl->glue('menuitem', $this->tpl
+                                                ->get('menuitem')
+                                                ->injectAll($menus));
+            }
+        }
     }
     
     function __destruct() {
-        $this->tpl->injectAll($this->slots);
-        echo preg_replace_callback('|\{.+?\}|', '\controllers\__', $this->tpl);
+        if (!$this->ajax) {
+            if ($this->page) {
+                $this->tpl->glue('page', $this->page);
+            }
+            $this->buildMenu();
+        }
+        if ($this->tpl) {
+            $this->tpl->injectAll($this->slots);
+ //           echo $this->tpl;
+            echo preg_replace_callback('|\{.+?\}|', '\controllers\__', $this->tpl);
+        }
     }
 }

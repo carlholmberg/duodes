@@ -19,7 +19,10 @@ class DBModel
     public $data;
     public $type;
     
-    function __construct($type, $id) {
+    function __construct($type=false, $id=false) {
+        if ($type === false) {
+            return false;
+        }
         $this->type = $type;
         if ($id == false) {
             $this->data = \R::dispense($type);
@@ -28,6 +31,7 @@ class DBModel
         }
         return $this->data;
     }
+    
     
     function save() {
         \R::store($this->data);
