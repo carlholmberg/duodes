@@ -1,7 +1,5 @@
 <?php
 
-date_default_timezone_set('Europe/Stockholm');
-
 $menu = array(
     array('title' => 'Circ',
           'icon' => 'repeat',
@@ -47,21 +45,23 @@ $menu = array(
           'icon' => '')
 );
 
-$app = require('../lib/f3/base.php');
+$app = require('app/lib/f3/base.php');
 
-$app->config('../data/config.ini');
+$app->config('data/config.ini');
 
 $app->set('CACHE', false);
 $app->set('DEBUG', 3);
 
-$app->set('AUTOLOAD', '../inc/');
-$app->set('UI','../ui/'); 
-$app->set('TEMP', '../temp/');
+$app->set('AUTOLOAD', 'app/inc/');
+$app->set('UI','app/ui/'); 
+$app->set('TEMP', 'data/temp/');
+$app->set('TZ', 'Europe/Stockholm');
 
 
-$app->set('LOC','../lang/');
+$app->set('LOC','app/lang/');
 $app->set('LANG', 'sv_SE');
 $app->set('menu', $menu);
+$app->set('autoaccount', array('carlsholmberg@gmail.com'));
 
 $app->route('GET /', '\controllers\Main->index');
 //$app->route('GET /minify/@type', '\controllers\Main->minify', 3600);

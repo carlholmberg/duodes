@@ -11,7 +11,7 @@
 namespace controllers;
 
 // Include Stamp template system
-require_once('../lib/StampTE.php');
+require_once('app/lib/StampTE.php');
 
 function __($str, $values=false) {
     
@@ -55,7 +55,7 @@ class Controller
             $this->slots = array();
         } else {
             $this->tpl = new \StampTE(file_get_contents($this->app->get('UI').'main.tpl'));
-            $this->slots = array('base_href' => 'http://localhost/duodes/public/');
+            $this->slots = array('base_href' => 'http://'.$this->app->get('HOST').$this->app->get('BASE').'/');
         }
         
     }

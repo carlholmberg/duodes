@@ -52,10 +52,12 @@ class Login {
         $app = \Base::instance();
         switch ($data['from']) {
             case 'google':
-                $acc = new \models\Account($data);
+                $acc = new \models\Account;
+                $acc->fromGoogle($data);
                 break;
             case 'local':
-                $acc = array('name' => 'Noname', 'email' => $data['email'], 'level' => 3);
+                $acc = new \models\Account;
+                $acc->fromLocal($data);
                 break;
             default:
                 break;

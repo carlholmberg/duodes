@@ -10,8 +10,8 @@
  */
 namespace models;
 
-require_once('../lib/rb.php');
-\R::setup('sqlite:../data/db.db');
+require_once('app/lib/rb.php');
+\R::setup('sqlite:data/db.db');
 
 class DBModel
 {
@@ -20,6 +20,7 @@ class DBModel
     public $type;
     
     function __construct($type=false, $id=false) {
+        $this->app = \Base::instance();
         if ($type === false) {
             return false;
         }
