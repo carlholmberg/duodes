@@ -12,29 +12,43 @@ namespace models;
 
 class Account extends \models\DBModel {
     
-    function fromGoogle($data) {
-        if ($data['from'] != 'google') {
-            return false;
-        }
-        $account = \R::findOne('account', ' email = :email', 
-            array(':email' => $data['email'])
+    /* Model: Account
+        id [auto]
+        user [Model.User]
+        level [0-3]
+        email [str]
+        salt [salt()]
+        password [hash(str, salt)]
+        type [inactive, google, local]
+    */
+    
+    function __construct($email) {
+        $this->data = \R::findOne('account', ' email = :email', 
+            array(':email' => $email)
         );
-        if (!$account && in_array($data['email'], $this->app->get('autoaccount'))) {
-            $this->app->reroute('/account/create');
-        }
-        
-        
-            $this->info = array('name' => $data['fname'].' '.$data['lname'], 'email' => $data['email'], 'level' => 3);
-        if (!$account) {
-            return false;
+        $this->exists = false;
+        if ($this->data) {
+            $this->exists = true;
+            $this->active = ($this->data->type != 'inactive');
         }
     }
     
-    function fromLocal($data) {
-    $acc = array('name' => 'Noname', 'email' => $data['email'], 'level' => 3);
+    
+    function createUser() {
+        
+    }
+    
+    function connectUser($uid) {
+        $this->data->user = \R::load('user', $uid);
+        $this->save();
     }
     
     function info() {
-        return $this->info;
+        if ($this->data) {
+            return array('name' => $this->data->name,
+                         'email' => $this->data->email,
+                         'level' => $this->data->level);
+        }
+        return false;
     }
 }

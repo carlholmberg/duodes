@@ -34,6 +34,10 @@ class DBModel
     }
     
     
+    function update($data) {
+        $this->data->import($data);
+    }
+    
     function save() {
         \R::store($this->data);
     }

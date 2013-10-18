@@ -10,7 +10,7 @@
  */
 namespace controllers;
 
-class Main extends \controllers\Controller {
+class Main extends \controllers\ViewController {
     
     function minify($app, $params) {
         $app->set('UI', $params['type'] . '/');
@@ -18,13 +18,24 @@ class Main extends \controllers\Controller {
     }
 
     function index($app, $params) {
-        $this->reqLevel(1);
+        $this->menu = true;
+        $this->footer = true;
         $this->slots['pagetitle'] = '{Home}';
         $this->setPage('index');
     }
     
-    function collection($app, $params) {
-        echo 'Start for '.$params['collection'];
+    function login($app, $params) {
+        $this->slots['pagetitle'] = '{Login}';
+        $this->setPage('login');
+    }
+    
+    function noaccess($app, $params) {
+        $this->slots['pagetitle'] = '{No access}';
+        $this->setPage('noaccess');
+    }
+    
+    function e404() {
+        $this->setPage('404');
     }
     
     function label($app, $params) {

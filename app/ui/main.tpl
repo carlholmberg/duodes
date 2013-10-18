@@ -20,6 +20,7 @@
   
     <body>
         
+        <!-- cut:menu -->
         <nav class="navbar-wrapper navbar-default navbar-fixed-top" role="navigation">
             <div class="container">
                 <div class="navbar-header">
@@ -29,7 +30,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#base_href#"><img src="img/duodes-liten.png" /></a>
+                    <a class="navbar-brand" href="#base_href#"><img alt="branding" src="img/duodes-liten.png" /></a>
                 </div>
 
                 <div class="collapse navbar-collapse">
@@ -38,7 +39,7 @@
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Search">
                         </div>
-                        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></button>
+                        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
                     </form>
                     
                     <ul class="nav navbar-nav">
@@ -60,12 +61,15 @@
                     </ul>            
                 </div>
             </div>
-            
+        
         </nav>
+        <!-- /cut:menu -->
+        <!-- paste:menu -->
         
         <!-- paste:page -->
     
-        <footer>
+        <!-- cut:footer -->
+        <footer class="well">
             <div class="container">
                 <div class="row">
                     <div class="col-md-4">Duodes &copy; 2013 Talgank</div>
@@ -75,11 +79,13 @@
                                 <li><a href="#">Kontakta Talgdank</a></li>
                             </ul>
                         </div>
-                        <div class="col-md-4"><img src="img/duodes.png" width="300px" />
+                        <div class="col-md-4"><img src="img/duodes.png" alt="branding" width="300" />
                     </div>
                 </div>
             </div>
         </footer>
+        <!-- /cut:footer -->
+        <!-- paste:footer -->
 
     </body>
 </html>

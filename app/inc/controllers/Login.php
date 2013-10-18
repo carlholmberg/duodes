@@ -10,7 +10,7 @@
  */
 namespace controllers;
 
-class Login {
+class Login extends \controllers\Controller {
 
     function google($app, $params) {
         if ($app->get('GET.openid_mode') == 'cancel') {
@@ -20,11 +20,15 @@ class Login {
             $openid = new \Web\OpenID;
             if ($openid->verified()) {
                 $response = $openid->response();
-                $data = array('lname' => $response['ext1.value.lastname'],
-                              'fname' => $response['ext1.value.firstname'],
-                              'email' => $response['ext1.value.email'],
-                              'from' => 'google');
-                $this->login($data);
+                $name = $response['ext1.value.firstname'].' '.$response['ext1.value.lastname'];
+                $data = array('name' => $name,
+                              'email' => $response['ext1.value.email']);
+                
+                $acc = new \controllers\Account;
+                $ok = $acc->fromGoogle($data);
+                if ($ok) {
+                    $app->set('SESSION.account', $ok);
+                }
                 $app->reroute('/');
 		    }
         }
@@ -43,37 +47,23 @@ class Login {
     }
     
     function logout() {
-        $app = \Base::instance();
-        $app->set('SESSION.account', false);
-        $app->reroute('/');
+        $this->app->set('SESSION.account', false);
+        $this->app->reroute('/');
     }
     
-    function login($data) {
-        $app = \Base::instance();
-        switch ($data['from']) {
-            case 'google':
-                $acc = new \models\Account;
-                $acc->fromGoogle($data);
-                break;
-            case 'local':
-                $acc = new \models\Account;
-                $acc->fromLocal($data);
-                break;
-            default:
-                break;
-        }
-        if ($acc) {
-            $app->set('SESSION.account', $acc->info());
-        }
-    }
     
     function local($app, $params) {
         $email = $app->get('POST.email');
         $password = $app->get('POST.password');
         
         $data = array('email' => $email,
-                      'from' => 'local');
-        $this->login($data);
+                      'password' => $password);
+        
+        $acc = new \controllers\Account;
+        $ok = $acc->fromLocal($data);
+        if ($ok) {
+            $app->set('SESSION.account', $ok);
+        }
         $app->reroute('/');
     }
 

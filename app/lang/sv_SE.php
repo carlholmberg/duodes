@@ -3,7 +3,9 @@
 return array(
 	// Actions
 	'About' => 'Om',
+	'Login' => 'Logga in',
 	'Home' => 'Hem',
+	'No access' => 'Ingen behörighet',
 	'Return' => 'Återlämna',
 	'Borrow' => 'Låna',
 	'Add' => 'Lägg till',
