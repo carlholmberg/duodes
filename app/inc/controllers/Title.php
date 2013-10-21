@@ -10,24 +10,31 @@
  */
 namespace controllers;
 
-class Title extends \controllers\Controller {
-    function get($f3, $params) {
-        echo $params['collection']."<br>";
+class Title extends \controllers\ViewController {
+    function get($app, $params) {
         switch ($params['id']) {
-            case 'all':
-                echo 'Show all titles';
-                break;
             case 'new':
                 echo 'New title';
                 break;
             default:
-                if (!is_numeric($params['id']))
-                    $f3->reroute('/'.$params['collection']);
-                echo 'Get title:'.$params['id'];
+                $this->menu = true;
+                $this->footer = true;
+                $title = new \models\Title($params['id']);
+                $copies = $title->getCopies();
+                $this->slots['pagetitle'] = '{Title}';
+                $this->slots['id'] = $params['id'];
+                $this->slots['title'] = $title->data->title;
+                $this->setPage('title');
+                $this->addPiece('main', 'tablesorter', 'extrahead');
+                $this->addPiece('main', 'xeditable', 'extrahead');
                 break;
         }
     }
-    function post() {}
+    function post($app, $params) {}
     function put() {}
     function delete() {}
+    
+    function buildTable($copies) {
+    
+    }
 }

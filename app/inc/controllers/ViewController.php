@@ -18,6 +18,7 @@ class ViewController extends \controllers\Controller
     public $tpl;
     public $page;
     public $slots;
+    public $pieces = array();
     public $menu = false;
     public $footer = false;
     
@@ -41,7 +42,30 @@ class ViewController extends \controllers\Controller
             $this->page = new \StampTE(file_get_contents($this->app->get('UI').$page.'.tpl'));
         }
     }
-
+    
+    function addPiece($tpl, $what, $where, $slots=array()) {
+        if (!isset($this->pieces[$tpl])) $this->pieces[$tpl] = array();
+        $this->pieces[$tpl][] = array($what, $where, $slots);
+    }
+    
+    function addPieces() {
+        foreach ($this->pieces as $tpl=>$pieces) {
+            foreach ($pieces as $piece) {
+                list($what, $where, $slots) = $piece;
+                if (is_string($what)) {
+                    if ($tpl == 'main')
+                        $this->tpl->glue($where, $this->tpl->get($what)->injectAll($slots));
+                    else if ($tpl == 'page')
+                        $this->page->glue($where, $this->page->get($what)->injectAll($slots));
+                } else {
+                    if ($tpl == 'main')
+                        $this->tpl->glue($where, $what->injectAll($slots));
+                    else if ($tpl == 'page') 
+                        $this->page->glue($where, $what->injectAll($slots));       
+                }
+            }
+        }
+    }
     
     function buildMenu() {
         $themenu = $this->tpl->get('menu');
@@ -101,6 +125,7 @@ class ViewController extends \controllers\Controller
     
     function __destruct() {
         if ($this->tpl) {
+            $this->addPieces();
             if ($this->page) {
                 $this->tpl->glue('page', $this->page);
             }

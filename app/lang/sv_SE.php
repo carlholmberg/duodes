@@ -5,6 +5,7 @@ return array(
 	'About' => 'Om',
 	'Login' => 'Logga in',
 	'Home' => 'Hem',
+	'Copies' => 'Kopior',
 	'No access' => 'Ingen behörighet',
 	'Return' => 'Återlämna',
 	'Borrow' => 'Låna',

@@ -19,7 +19,7 @@ class DBModel
     public $data;
     public $type;
     
-    function __construct($type=false, $id=false) {
+    function load($type=false, $id=false) {
         $this->app = \Base::instance();
         if ($type === false) {
             return false;

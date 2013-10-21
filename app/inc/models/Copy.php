@@ -10,6 +10,15 @@
  */
 namespace models;
 
-class Copy extends \models\Model {
-    
+class Copy extends \models\DBModel {
+    /* Model: Title
+        id [auto]
+        title [Model.Title]
+        borrowed_by [Model.User]
+        return_date [date]
+        collection [Model.Collection]
+        acquired [date]
+        state []
+        barcode [str]
+    */
 }

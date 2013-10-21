@@ -92,6 +92,7 @@ $app->route('GET /batch', '\controllers\Batch');
 $app->route('GET|POST /login/@type', '\controllers\Login->@type');
 $app->route('GET /logout', '\controllers\Login->logout');
 
+$app->route('GET /titles/@from/@to', '\controllers\Main->titles_ajax');
 
 // REST-API
 $app->map('/title/@id', '\controllers\Title');

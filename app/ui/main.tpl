@@ -15,6 +15,38 @@
 
         <script src="js/jquery.js"></script>
         <script src="js/bootstrap.js"></script>
+        
+        <!-- cut:tablesorter -->
+        <link rel="stylesheet" type="text/css" href="css/theme.bootstrap.css" />
+        <script src="js/jquery.tablesorter.min.js"></script>
+        <script src="js/jquery.tablesorter.widgets.min.js"></script>
+        <script src="js/jquery.tablesorter.pager.min.js"></script>
+        <script src="js/main.js"></script>
+        <!-- /cut:tablesorter -->
+        <!-- cut:xeditable -->
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-editable.css" />
+        <script src="js/bootstrap-editable.min.js"></script>
+        <!-- /cut:xeditable -->
+        
+        <!-- cut:ajaxupdate -->
+        <script>
+$(document).ready(function() {
+    var num_ids = #ids#;
+    function update(from, to) {
+        if (from > num_ids) return;
+        $.get("titles/"+from+"/"+to, function(html) {
+            $("table tbody").append(html);
+            var resort = true;
+            $("table").trigger("update", [resort]);
+            update(from+40, to+40);
+        });
+    }
+    update(40, 80);
+}); 
+        </script>
+        <!-- /cut:ajaxupdate -->
+        
+        <!-- paste:extrahead -->
   
     </head>
   
@@ -74,8 +106,8 @@
                 <div class="row">
                     <div class="col-md-4">Duodes &copy; 2013 Talgank</div>
                         <div class="col-md-4">
-                            <ul class="nav nav-pills">
-                                <li class="active"><a href="#">{About} Duodes</a></li>
+                            <ul class="pager">
+                                <li><a href="#">{About} Duodes</a></li>
                                 <li><a href="#">Kontakta Talgdank</a></li>
                             </ul>
                         </div>
