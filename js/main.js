@@ -1,4 +1,31 @@
 $(document).ready(function() {
+    
+    function update(from, to) {
+        if (from > num_ids) return;
+        $.get("titles/"+from+"/"+to, function(html) {
+            $("table tbody").append(html);
+            var resort = true;
+            $("table").trigger("update", [resort]);
+            update(from+40, to+40);
+        });
+    }
+
+    var num_ids = 0;
+    $.get("ajax/titleids", function(ids) {
+        num_ids = ids;
+        if (num_ids > 40) {
+            $.get("ajax/tablesorter-nav", function(html) {
+                $("table tfoot").append(html);
+                $('table').tablesorterPager({
+                    container: $(".pager"),
+                    cssGoto  : ".pagenum",
+                    removeRows: false,
+                    output: 'Visar {startRow} - {endRow} av {filteredRows} rader (totalt: {totalRows})'
+                });
+                update(40, 80);
+            });
+        }
+    });
 
   $.extend($.tablesorter.themes.bootstrap, {
     // these classes are added to the table. To see other table classes available,
@@ -12,56 +39,19 @@ $(document).ready(function() {
     sortAsc    : 'icon-chevron-up',
     sortDesc   : 'icon-chevron-down',
     active     : '', // applied when column is sorted
-    hover      : '', // use custom css here - bootstrap class may not override it
     filterRow  : '', // filter row class
-    even       : '', // odd row zebra striping
-    odd        : ''  // even row zebra striping
   });
 
   // call the tablesorter plugin and apply the uitheme widget
   $("table").tablesorter({
-    // this will apply the bootstrap theme if "uitheme" widget is included
-    // the widgetOptions.uitheme is no longer required to be set
     theme : "bootstrap",
-
     widthFixed: true,
-
     headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
-
-    // widget code contained in the jquery.tablesorter.widgets.js file
-    // use the zebra stripe widget if you plan on hiding any rows (filter widget)
     widgets : [ "uitheme", "filter", "zebra" ],
-
     widgetOptions : {
-      // using the default zebra striping class name, so it actually isn't included in the theme variable above
-      // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
       zebra : ["even", "odd"],
-
-      // reset filters button
       filter_reset : ".reset"
-
-      // set the uitheme widget to use the bootstrap theme class names
-      // this is no longer required, if theme is set
-      // ,uitheme : "bootstrap"
-
     }
-  })
-  .tablesorterPager({
-
-    // target the pager markup - see the HTML block below
-    container: $(".pager"),
-
-    // target the pager page select dropdown - choose a page
-    cssGoto  : ".pagenum",
-
-    // remove rows from the table to speed up the sort of large tables.
-    // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
-    removeRows: false,
-
-    // output string - default is '{page}/{totalPages}';
-    // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
-    output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
-
   });
 
 });

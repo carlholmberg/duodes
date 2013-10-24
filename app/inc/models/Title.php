@@ -30,6 +30,8 @@ class Title extends \models\DBModel {
     function __construct($id=false) {
         if ($id) {
             $this->load('title', $id);
+        } else {
+            return false;
         }
     }
     
@@ -57,5 +59,20 @@ class Title extends \models\DBModel {
         }
         
 		return $titles;
+    }
+    
+    function getData() {
+        $data = array();
+        if ($this->data) {
+            foreach($this->data->export() as $key=>$val) {
+                if (is_string($val)) {
+                    $data[$key] = $val;
+                }
+                if ($val == null) {
+                    $data[$key] = '';
+                }
+            }
+        }
+        return $data;
     }
 }

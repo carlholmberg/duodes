@@ -27,9 +27,9 @@ function __($str, $values=false) {
 		    return vsprintf($str, $values);
 	    }
 	    return $str;
-	} else {
+	} /*else {
 	    trigger_error("{$key} not in ".$app->get('LANG'), E_USER_NOTICE);
-    }
+    }*/
     
     if (is_array($str)) {
         return $str[0];
@@ -61,6 +61,10 @@ class Controller
                 $this->app->reroute('/noaccess');
             }
         }
+    }
+    
+    function hasLevel($lvl=0) {
+        return ($this->lvl >= $lvl);    
     }
     
     

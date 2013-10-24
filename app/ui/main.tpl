@@ -26,25 +26,31 @@
         <!-- cut:xeditable -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap-editable.css" />
         <script src="js/bootstrap-editable.min.js"></script>
-        <!-- /cut:xeditable -->
+        <link rel="stylesheet" type="text/css" href="css/select2.css" />
+        <link rel="stylesheet" type="text/css" href="css/select2-bootstrap.css" />
+        <script src="js/select2.js"></script>
         
-        <!-- cut:ajaxupdate -->
         <script>
 $(document).ready(function() {
-    var num_ids = #ids#;
-    function update(from, to) {
-        if (from > num_ids) return;
-        $.get("titles/"+from+"/"+to, function(html) {
-            $("table tbody").append(html);
-            var resort = true;
-            $("table").trigger("update", [resort]);
-            update(from+40, to+40);
-        });
-    }
-    update(40, 80);
-}); 
+    //toggle `popup` / `inline` mode
+    $.fn.editable.defaults.mode = 'popup';     
+    
+    $('.editable').editable({
+        emptytext: "Tom",
+        success: function(response, newValue) {
+            if(response.status == 'error') return response.msg;
+        }
+    });
+    $('#keywords').editable({
+        select2: {
+            tags: ['html', 'javascript', 'css', 'ajax'],
+            tokenSeparators: [",", " "]
+        }
+    }); 
+});
+        
         </script>
-        <!-- /cut:ajaxupdate -->
+        <!-- /cut:xeditable -->
         
         <!-- paste:extrahead -->
   

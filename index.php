@@ -74,6 +74,7 @@ $app->set('TEMP', 'data/temp/');
 $app->set('TZ', 'Europe/Stockholm');
 
 $app->set('ONERROR', function() {
+    if ($app->get('AJAX')) return;
     $m = new \controllers\Main;
     $m->e404();
 });
@@ -104,5 +105,7 @@ $app->map('/label/@type/@group/@id','\controllers\Label');
 $app->map('/report/@name', '\controllers\Report');
 $app->map('/log/@date', '\controllers\Log');
 $app->map('/batch/@id', '\controllers\Batch');
+$app->map('/image/@id', '\controllers\Image');
+$app->map('/ajax/@what', '\controllers\Ajax');
 
 $app->run();

@@ -51,7 +51,6 @@ class Main extends \controllers\ViewController {
         $this->footer = true;
         $this->addPiece('main', 'tablesorter', 'extrahead');
         $ids = \models\Title::getIDs();
-        $this->addPiece('main', 'ajaxupdate', 'extrahead', array('ids' => count($ids)));
         $this->slots['pagetitle'] = '{Titles}';
         $this->setPage('titles');
         
@@ -83,9 +82,11 @@ class Main extends \controllers\ViewController {
             $row = $tpl->get('row');
             $id = $title['id'];
             foreach(array_keys($header) as $cell) {
-                if ($cell == 'title')
+                if ($cell == 'title') {
+                    if ($title[$cell] == '') $title[$cell] = '[{No title}]';
+
                     $row->glue('cell', $row->get('acell')->injectAll(array('id'=>$id, 'cell'=>$title[$cell])));
-                else
+                } else
                     $row->glue('cell', $row->get('cell')->inject('cell', $title[$cell]));
             }
             $tpl->glue('row', $row);
@@ -119,8 +120,10 @@ class Main extends \controllers\ViewController {
             $row = $tpl->get('row');
             $id = $title['id'];
             foreach($header as $cell) {
-                if ($cell == 'title')
+                if ($cell == 'title') {
+                    if ($title[$cell] == '') $title[$cell] = '[{No title}]';
                     $row->glue('cell', $row->get('acell')->injectAll(array('id'=>$id, 'cell'=>$title[$cell])));
+                }
                 else
                     $row->glue('cell', $row->get('cell')->inject('cell', $title[$cell]));
             }

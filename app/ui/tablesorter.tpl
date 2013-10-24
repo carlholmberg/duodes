@@ -1,9 +1,3 @@
-<div class="container">
-    <h1>{Titles}</h1>
-    
-</div>
-
-<div class="container">
 <table class="tablesorter">
 	<thead>
 		<tr>
@@ -20,9 +14,9 @@
 			<!-- /cut:fcell -->
 			<!-- paste:fcell -->
         </tr>
+		
 	</tfoot>
 	<tbody>
 	    <!-- paste:tbody -->
 	</tbody>
 </table>
-</div>

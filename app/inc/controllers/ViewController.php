@@ -25,7 +25,7 @@ class ViewController extends \controllers\Controller
 
     function __construct() {
         parent::__construct();
-        $this->tpl = new \StampTE(file_get_contents($this->app->get('UI').'main.tpl'));
+        $this->tpl = $this->loadTpl('main');
         $this->slots = array('base_href' => 'http://'.$this->app->get('HOST').$this->app->get('BASE').'/');
         if ($this->app->get('SESSION.account')) {
             $acc = $this->app->get('SESSION.account');
@@ -36,6 +36,13 @@ class ViewController extends \controllers\Controller
         
     }
     
+    function loadTpl($tpl) {
+        $file = $this->app->get('UI').$tpl.'.tpl';
+        if (file_exists($file)) {
+            return new \StampTE(file_get_contents($file));
+        }
+        return false;
+    }
 
     function setPage($page) {
         if (file_exists($this->app->get('UI').$page.'.tpl')) {
