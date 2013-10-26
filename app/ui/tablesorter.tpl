@@ -5,7 +5,6 @@
 			<th class="#class#" data-placeholder="#placeholder#">#name#</th>
 			<!-- /cut:hcell -->
 			<!-- paste:hcell -->
-			<!--<th class="filter-select filter-exact" data-placeholder="Pick a gender">Sex</th>-->
 	</thead>
 	<tfoot>
 		<tr>

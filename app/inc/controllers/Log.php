@@ -11,10 +11,18 @@
 namespace controllers;
 
 class Log extends \controllers\Controller {
-    function get($f3, $params) {
-        echo 'Log (GET): date '.$params['date'];
+    function __construct($action, $message="", $data="") {
+        parent::__construct();
+        
+        $account = $this->app->get('SESSION.account');
+        
+        $info = array(
+            'ts' => time(),
+            'uri' => $this->app->get('URI'),
+            'action' => $action,
+            'user' => $account['email'],
+            'msg' => $message,
+            'data' => $data);
+        $log = new \models\Log($info);
     }
-    function post() {}
-    function put() {}
-    function delete() {}
 }

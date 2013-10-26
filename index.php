@@ -23,7 +23,7 @@ $menu = array(
         array('link' => 'title/new',
               'title' => '{New title}',
               'icon' => 'edit',
-              'level' => 2),
+              'level' => 3),
         array('link' => 'titles',
             'title' => '{Show titles}',
             'icon'=> 'tasks',
@@ -33,32 +33,32 @@ $menu = array(
     
     array('title' => '{Users}',
           'icon' => 'user',
-          'level' => 2,
+          'level' => 3,
           'submenu' => array(
         array('link' => 'user',
               'title' => 'New title',
               'icon' => 'edit',
-              'level' => 2),
+              'level' => 3),
         array('link' => 'user/all',
             'title' => 'Show users',
             'icon'=> 'tasks',
-            'level' => 2)
+            'level' => 3)
         )
     ),
     
     array('link' => 'barcode',
           'title' => 'Barcodes',
           'icon' => 'barcode',
-          'level' => 3),
+          'level' => 4),
     array('link' => 'report',
           'title' => 'Reports',
           'icon' => '',
-          'level' => 2),
+          'level' => 3),
           
     array('link' => 'batch',
           'title' => 'Batch',
           'icon' => '',
-          'level' => 3)
+          'level' => 4)
 );
 
 $app = require('app/lib/f3/base.php');
@@ -97,13 +97,13 @@ $app->route('GET /titles/@from/@to', '\controllers\Main->titles_ajax');
 
 // REST-API
 $app->map('/title/@id', '\controllers\Title');
+$app->map('/title/@id/@action', '\controllers\Title');
 $app->map('/user/@id', '\controllers\User');
 $app->map('/account/@id', '\controllers\Account');
 $app->map('/copy/@id', '\controllers\Copy');
 $app->map('/label/@type/@id','\controllers\Label');
 $app->map('/label/@type/@group/@id','\controllers\Label');
 $app->map('/report/@name', '\controllers\Report');
-$app->map('/log/@date', '\controllers\Log');
 $app->map('/batch/@id', '\controllers\Batch');
 $app->map('/image/@id', '\controllers\Image');
 $app->map('/ajax/@what', '\controllers\Ajax');

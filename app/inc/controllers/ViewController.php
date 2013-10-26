@@ -43,10 +43,44 @@ class ViewController extends \controllers\Controller
         }
         return false;
     }
+    
+    function buildTable($header, $data, $return=false) {
+        foreach ($header as $key=>$val) {
+            $this->addPiece('page', 'hcell', 'hcell', $val);
+            $this->addPiece('page', 'fcell', 'fcell', $val);
+        }
+        $tpl = $this->loadTpl('tablesorter-row');
+        foreach ($data as $item) {
+            $row = $tpl->get('row');
+            $id = $item['id'];
+            foreach(array_keys($header) as $cell) {
+                if (!isset($item[$cell])) continue;
+                if ($item[$cell] == '') $item[$cell] = '-';
+                if (isset($header[$cell]['href'])) {
+                    $row->glue('cell', $row->get('acell')->injectAll(array('href' => $header[$cell]['href'], 'id'=>$id, 'cell'=>$item[$cell])));
+                } else {
+                    $row->glue('cell', $row->get('cell')->injectAll(array('id'=>$id, 'cell'=>$item[$cell])));
+                }
+            }
+            $tpl->glue('row', $row);
+        }
+        if ($return) {
+            return $tpl;
+        }
+        $this->addPiece('page', $tpl, 'tbody');
+    }
 
     function setPage($page) {
         if (file_exists($this->app->get('UI').$page.'.tpl')) {
             $this->page = new \StampTE(file_get_contents($this->app->get('UI').$page.'.tpl'));
+        }
+    }
+    
+    function addSlots($arr) {
+        if (is_array($arr)) {
+            foreach($arr as $k => $v) {
+                $this->slots[$k] = $v;
+            }
         }
     }
     
@@ -79,6 +113,7 @@ class ViewController extends \controllers\Controller
         $menudata = $this->app->get('menu');
         
         if ($this->lvl == 0) {
+            $menudata[1] = $menudata[1]['submenu'][1];
             $menudata[] = array('title' => '{Log in}',
                             'link' => 'login',
                             'icon' => 'star',
@@ -88,6 +123,10 @@ class ViewController extends \controllers\Controller
                             'icon' => 'star',
                             'level' => 0,
                             'submenu' => array(
+                                array('link' => '#',
+                                      'title' => '{My books}',
+                                      'icon'=> 'book',
+                                      'level' => 0),
                                 array('link' => '#',
                                       'title' => '{Group}',
                                       'icon' => 'th-list',

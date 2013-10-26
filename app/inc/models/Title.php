@@ -30,15 +30,26 @@ class Title extends \models\DBModel {
     function __construct($id=false) {
         if ($id) {
             $this->load('title', $id);
-        } else {
-            return false;
         }
     }
     
     function getCopies() {
         $copies = array();
         foreach($this->data->ownCopy as $c) {
-            $copies[] = $c->export(false, false, true);
+            $coll = array('Bibliotek', 'Kurslitteratur'); //tmp
+            $cop = $c->export();
+            if ($cop['user_id']) {
+                $cop['return_date'] = time(); //tmp
+            
+                $cop['return_date'] = date('Y-m-d', $cop['return_date']);
+                $cop['borrowed_by'] = $c->user->name." ("/*.$c->user->class*/.")";
+            } else {
+                $cop['borrowed_by'] = '';
+                $cop['return_date'] = '';
+            }
+            $cop['collection'] = $coll[rand(0,1)]; //tmp
+            $cop['bc_print'] = false;
+            $copies[] = $cop;
         }
         return $copies;
     }
@@ -74,5 +85,25 @@ class Title extends \models\DBModel {
             }
         }
         return $data;
+    }
+    
+    static function getHeader($lvl) {
+        $header = array(
+            'title'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Title}', 'href'=>'title'),
+            'author'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Author}'),
+            'isbn'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'ISBN'),
+            'date'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Year}'),
+            'total'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Total}'),
+            'borrowed'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Borrowed}'));
+        if ($lvl < 2) {
+            unset($header['borrowed']);
+        }
+        return $header;
     }
 }

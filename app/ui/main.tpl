@@ -16,11 +16,17 @@
         <script src="js/jquery.js"></script>
         <script src="js/bootstrap.js"></script>
         
+        <script src="js/bootbox.js"></script>
+        
         <!-- cut:tablesorter -->
         <link rel="stylesheet" type="text/css" href="css/theme.bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.tablesorter.css" />
+        
         <script src="js/jquery.tablesorter.min.js"></script>
         <script src="js/jquery.tablesorter.widgets.min.js"></script>
         <script src="js/jquery.tablesorter.pager.min.js"></script>
+        <script src="js/widget-grouping.js"></script>
+        
         <script src="js/main.js"></script>
         <!-- /cut:tablesorter -->
         <!-- cut:xeditable -->
@@ -47,6 +53,34 @@ $(document).ready(function() {
             tokenSeparators: [",", " "]
         }
     }); 
+    
+    $('#delete').click(function() {
+        bootbox.dialog({
+            message: "{Are you sure you want to delete this title?}",
+            title: "{Delete title}",
+            buttons: {
+                success: {
+                    label: "{No}",
+                    className: "btn-default"
+                },
+                danger: {
+                    label: "{Yes}",
+                    className: "btn-danger",
+                    callback: function() {
+                        $.ajax({
+                            url: location.href,
+                            type: 'DELETE',
+                            success: function(result) {
+                                location.href = result;
+                            }
+                        });
+                    }
+                },
+            }
+        });
+
+    });
+
 });
         
         </script>

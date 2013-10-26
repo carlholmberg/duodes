@@ -2,9 +2,16 @@
 
 return array(
 	// Actions
+	
+	'Yes' => 'Ja',
+	'No' => 'Nej',
+	
 	'About' => 'Om',
 	'Login' => 'Logga in',
 	'Home' => 'Hem',
+	'Add' => 'Lägg till',
+	'New copies' => 'Nya kopior',
+	'Return date' => 'Återlämningsdatum',
 	'Copies' => 'Kopior',
 	'Language' => 'Språk',
 	'Description' => 'Beskrivning',
@@ -54,7 +61,7 @@ return array(
 	'Author' => 'Författare',
 	'Year' => 'År',
 	'Group' => 'BG',
-	'Borrowed' => 'Utlån',
+	'Borrowed' => 'Utlånad',
 	'Tag' => 'Etikett',
 	'Date' => 'Datum',
 	'Publisher' => 'Förlag',
@@ -68,11 +75,13 @@ return array(
 	'Save' => 'Spara',
 	'Find' => 'Sök',
 	
+	'Print barcode' => 'Skriv ut streckkod',
 	'Labels in queue' => 'Etiketter i kö',
 	
 	'Add new title' => 'Lägg till nya verk',
 	'New title' => 'Ny titel',
 	'Show titles' => 'Visa titlar',
+	'My books' => 'Mina böcker',
 	'Borrow books' => 'Låna böcker',
 	'Log in' => 'Logga in',
 	'Reports' => 'Rapporter',
@@ -81,6 +90,7 @@ return array(
 	'Titles in database' => 'Titlar i databasen',
 	'No:s' => 'Antal',
 	'out' => 'ute',
+	'Borrowed to' => 'Utlånad till',
 	'Borrowed books for' => 'Utlånade böcker för',
 	'in subject' => 'i ämne',
 	'by' => 'efter',
@@ -95,6 +105,9 @@ return array(
 	
 	'Scan or enter the barcode for the book' => 'Läs in eller skriv av bokens streckkod',
 	'Scan or enter the barcode for the book and user' => 'Läs in eller skriv av streckkoden för boken och användaren.',
+	
+	'Delete title' => 'Radera titel',
+	'Are you sure you want to delete this title?' => 'Är du säker på att du vill radera den här titeln?',
 	
 	// Error messages
 	'%1$s does not exist in the database.' => '%1$s finns inte i databasen.',

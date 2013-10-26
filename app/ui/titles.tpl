@@ -26,3 +26,8 @@
 	</tbody>
 </table>
 </div>
+<script type="text/javascript">
+    displayTitles(#ids#);
+</script>
+
+</script>

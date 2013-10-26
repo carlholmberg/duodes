@@ -12,12 +12,9 @@ namespace models;
 
 class Log extends \models\DBModel {
     
-    function __construct($id=false) {
-        $report = parent::__construct('log', $id);
-        
-        
+    function __construct($data) {
+        $this->load('log');
+        $this->update($data);
         $this->save();
-
-        die(var_dump($this->data));
     }
 }

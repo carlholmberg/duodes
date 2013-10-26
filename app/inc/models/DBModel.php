@@ -18,17 +18,21 @@ class DBModel
 
     public $data;
     public $type;
+    public $exists;
     
     function load($type=false, $id=false) {
         $this->app = \Base::instance();
         if ($type === false) {
+            $this->exists = false;
             return false;
         }
         $this->type = $type;
         if ($id == false) {
             $this->data = \R::dispense($type);
+            $this->exists = true;
         } else {
             $this->data = \R::load($type, $id);
+            $this->exists = (!$this->data->id)? false : true;
         }
         return $this->data;
     }
@@ -42,4 +46,7 @@ class DBModel
         \R::store($this->data);
     }
     
+    function delete() {
+        \R::trash($this->data);
+    }
 }

@@ -40,7 +40,7 @@ function __($str, $values=false) {
 class Controller
 {
 
-    public $lvl = 0;
+    public $lvl = 0; // 0: guest, 1: normal user, 2: lending, 3: teacher, 4: admin
     public $json = false;
     public $data;
     

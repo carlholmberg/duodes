@@ -1,35 +1,66 @@
-$(document).ready(function() {
-    
-    function update(from, to) {
-        if (from > num_ids) return;
-        $.get("titles/"+from+"/"+to, function(html) {
-            $("table tbody").append(html);
-            var resort = true;
-            $("table").trigger("update", [resort]);
-            update(from+40, to+40);
+function displayTitles(ids) {
+    initTitles();
+    if (ids > 40) {
+        $.get("ajax/tablesorter-nav", function(html) {
+            $("table tfoot").append(html);
+            $("table tfoot th.pager").attr('colspan', $("table thead th").length);
+            $('table').tablesorterPager({
+                container: $(".pager"),
+                cssGoto  : ".pagenum",
+                removeRows: false,
+                output: 'Visar {startRow} - {endRow} av {filteredRows} rader (totalt: {totalRows})'
+            });
+            update(ids, 40, 80);
         });
     }
-
-    var num_ids = 0;
-    $.get("ajax/titleids", function(ids) {
-        num_ids = ids;
-        if (num_ids > 40) {
-            $.get("ajax/tablesorter-nav", function(html) {
-                $("table tfoot").append(html);
-                $('table').tablesorterPager({
-                    container: $(".pager"),
-                    cssGoto  : ".pagenum",
-                    removeRows: false,
-                    output: 'Visar {startRow} - {endRow} av {filteredRows} rader (totalt: {totalRows})'
-                });
-                update(40, 80);
-            });
-        }
+}
+    
+function update(ids, from, to) {
+    if (from > ids) return;
+    $.get("titles/"+from+"/"+to, function(html) {
+        $("table tbody").append(html);
+        var resort = true;
+        $("table").trigger("update", [resort]);
+        update(ids, from+40, to+40);
     });
+}
+
+function initCopies() {
+  // call the tablesorter plugin and apply the uitheme widget
+  $("table").tablesorter({
+    theme : "bootstrap",
+    widthFixed: true,
+    headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
+    widgets : [ "uitheme", "filter", "zebra", "group" ],
+    widgetOptions : {
+      zebra : ["even", "odd"],
+      filter_reset : ".reset",
+      group_collapsible : true,
+    },
+    sortForce: [[0,0]]
+  });
+  $("table thead").find("th:eq(0)").trigger("sort");
+}
+
+function initTitles() {
+  // call the tablesorter plugin and apply the uitheme widget
+  $("table").tablesorter({
+    theme : "bootstrap",
+    widthFixed: true,
+    headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
+    widgets : [ "uitheme", "filter", "zebra" ],
+    widgetOptions : {
+      zebra : ["even", "odd"],
+      filter_reset : ".reset",
+      
+    },
+  });
+
+}
+
+$(document).ready(function() {
 
   $.extend($.tablesorter.themes.bootstrap, {
-    // these classes are added to the table. To see other table classes available,
-    // look here: http://twitter.github.com/bootstrap/base-css.html#tables
     table      : 'table table-bordered',
     header     : 'bootstrap-header', // give the header a gradient background
     footerRow  : '',
@@ -40,18 +71,6 @@ $(document).ready(function() {
     sortDesc   : 'icon-chevron-down',
     active     : '', // applied when column is sorted
     filterRow  : '', // filter row class
-  });
-
-  // call the tablesorter plugin and apply the uitheme widget
-  $("table").tablesorter({
-    theme : "bootstrap",
-    widthFixed: true,
-    headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
-    widgets : [ "uitheme", "filter", "zebra" ],
-    widgetOptions : {
-      zebra : ["even", "odd"],
-      filter_reset : ".reset"
-    }
   });
 
 });
