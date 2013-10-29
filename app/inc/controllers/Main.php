@@ -46,21 +46,7 @@ class Main extends \controllers\ViewController {
         echo 'Copy-page';
     }
 
-    function titles($app, $params) {
-        $this->menu = true;
-        $this->footer = true;
-        $this->addPiece('main', 'tablesorter', 'extrahead');
-        $ids = \models\Title::getIDs();
-        $this->slots['pagetitle'] = '{Titles}';
-        $this->slots['ids'] = count($ids);
-        $this->setPage('titles');
 
-        $header = \models\Title::getHeader($this->lvl);
-        $titles = \models\Title::getTitles(0, 40);
-        
-        $this->buildTable($header, $titles);
-    }
-    
     function titles_ajax($app, $params) {
         $from = (int)$params['from'];
         $to = (int)$params['to'];
@@ -72,12 +58,19 @@ class Main extends \controllers\ViewController {
         $this->tpl = false;
         echo $tpl;
     }
+    
+    function users_ajax($app, $params) {
+        $from = (int)$params['from'];
+        $to = (int)$params['to'];
+        $header = \models\User::getHeader($this->lvl);
+        $users = \models\User::getUsers($from, $to);
         
-    
-    function user($app, $params) {
-        echo 'User-page';
+        $tpl = $this->buildTable($header, $users, true);
+        
+        $this->tpl = false;
+        echo $tpl;
     }
-    
+        
     function report($app, $params) {
         echo 'Report-page';
     }

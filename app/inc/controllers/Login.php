@@ -20,14 +20,15 @@ class Login extends \controllers\Controller {
             $openid = new \Web\OpenID;
             if ($openid->verified()) {
                 $response = $openid->response();
-                $name = $response['ext1.value.firstname'].' '.$response['ext1.value.lastname'];
-                $data = array('name' => $name,
+                $data = array('firstname' => $response['ext1.value.firstname'],
+                              'lastname' => $response['ext1.value.lastname'],
                               'email' => $response['ext1.value.email']);
                 
-                $acc = new \controllers\Account;
-                $ok = $acc->fromGoogle($data);
+                $user = new \controllers\User;
+                $ok = $user->fromGoogle($data);
+                
                 if ($ok) {
-                    $app->set('SESSION.account', $ok);
+                    $app->set('SESSION.user', $ok);
                 }
                 $app->reroute('/');
 		    }
@@ -47,7 +48,7 @@ class Login extends \controllers\Controller {
     }
     
     function logout() {
-        $this->app->set('SESSION.account', false);
+        $this->app->set('SESSION.user', false);
         $this->app->reroute('/');
     }
     
@@ -59,10 +60,10 @@ class Login extends \controllers\Controller {
         $data = array('email' => $email,
                       'password' => $password);
         
-        $acc = new \controllers\Account;
-        $ok = $acc->fromLocal($data);
+        $user = new \controllers\User;
+        $ok = $user->fromLocal($data);
         if ($ok) {
-            $app->set('SESSION.account', $ok);
+            $app->set('SESSION.user', $ok);
         }
         $app->reroute('/');
     }

@@ -10,41 +10,181 @@
  */
 namespace controllers;
 
-class User extends \controllers\Controller {
-    function get($app, $params) {
-        if ($params['id'] == 'login') {
-            
-            $this->login();
-        } else if ($params['id'] == 'logon') {
-            $this->logon();
-        }
-        echo 'User (GET): name '.$params['id'];
+class User extends \controllers\ViewController {
+    
+    static function salt() {
+        return substr(str_shuffle(MD5(microtime())), 0, 5);
     }
     
-    function logon() {
-        $openid=new \Web\OpenID;
-        if ($openid->verified()) {
-            $response=$openid->response();
-		}
-	}
-	
-	function login() {
-        $openid=new \Web\OpenID;
-    	$openid->set('identity','https://www.google.com/accounts/o8/id');
-		$openid->set('return_to',
-		$this->app->get('SCHEME').'://'.$this->app->get('HOST').
-		$this->app->get('BASE').'/user/logon');
-	    // auth() should always redirect if successful; fail if displayed
-	    $openid->auth(NULL, array(
-			'email'=>'http://axschema.org/contact/email',
-			'firstname'=>'http://axschema.org/namePerson/first',
-			'lastname'=>'http://axschema.org/namePerson/last'),
-			array('email','firstname','lastname'));
+    static function hash($pw, $salt) {
+        $salt = md5($salt);
+        $pw = md5($pw);
+        return sha1(md5($salt . $pw) . $salt);
+    }
+    
+    static function verify($pw, $hash, $salt) {
+        return self::hash($pw, $salt) == $hash;
+    }
+    
+    
+    function fromGoogle($data) {
+        
+        $user = new \models\User('email', $data['email']);
+        if ($user->exists) {
+            if ($user->active) {
+                return $user->info();
+            } else {
+                $this->app->set('SESSION.tmpdata', $data);
+                $this->app->reroute('/user/create');
+            }
+        } else {
+            if (strpos($data['email'], 'kunskapsgymnasiet.se')) {
+                // För KGYM
+                $this->app->set('SESSION.tmpdata', $data);
+                $this->app->reroute('/user/create');
+            }
+        }
+        
+        return false;
+    }
+    
+    
+    function fromLocal($data) {
+        $user = new \models\User('email', $data['email']);
+        if ($user->exists) {
+            if (self::verify($data['password'], $user->data->password, $user->data->salt)) {
+                // TMP
+                if ($user->data->email == 'carl.holmberg@kunskapsgymnasiet.se') {
+                    $user->update(array('level' => 4));
+                    $user->save();
+                }
+                // --TMP
+                return $user->info();
+            }
+            return false;
+        }
+        return false;
+    }
+    
+    
+    function reformatUID($uid) {
+        $uid = implode('', explode('-', $uid));
+        if (strlen($uid) == 10) {
+            return $uid;
+        } else if (strlen($uid) == 12 && intval(substr($uid, 0, 2)) > 18) {
+            return substr($uid, 2);
+        }
+        return false;
+    }
+    
+    
+    function get($app, $params) {
+        switch ($params['id']) {
+            case 'create':
+                $data = $this->app->get('SESSION.tmpdata');
+                if (!is_array($data)) $this->app->error(404);
+                $this->slots['pagetitle'] = 'Konto';
+                $this->slots = array_merge($this->slots, $data);
+                $this->setPage('user-create');
+                break;
+            
+            case 'all':
+                $this->menu = true;
+                $this->footer = true;
+                $this->addPiece('main', 'tablesorter', 'extrahead');
+                $ids = \models\User::getIDs();
+                $this->slots['pagetitle'] = '{Users}';
+                $this->slots['ids'] = count($ids);
+                $this->setPage('users');
+
+                $header = \models\User::getHeader($this->lvl);
+                $users = \models\User::getUsers(0, 40);
+        
+                $this->buildTable($header, $users);
+                
+                break;
+            
+            default:
+                if ($this->lvl < 3) {
+                    if ($this->uid !== $params['id']) {
+                        $this->app->reroute('/noaccess');
+                    }
+                }
+                $this->menu = true;
+                $this->footer = true;
+                $user = new \models\User('id', $params['id']);
+                
+                if($user->exists) {
+                    $copies = $user->getCopies();
+                    $this->slots['id'] = $params['id'];
+                    $this->addSlots($user->getData());
+                    $this->slots['pagetitle'] = $this->slots['user'];
+                    $this->setPage('user');
+                    $this->addPiece('main', 'tablesorter', 'extrahead');
+                    if ($this->hasLevel(4)) {
+                        $this->addPiece('main', 'xeditable', 'extrahead');
+                        $this->addPiece('page', 'editing', 'editing');
+                    }
+                    if (count($copies)) {
+                        $header = \models\Copy::getHeader($this->lvl, 'user');
+                        $this->buildTable($header, $copies);
+                    }
+                } else {
+                    $app->reroute('/user/all');
+                }
+                break;
+        }
     }
     
     function post($app, $params) {
-        echo 'User (POST):'.print_r($app->get('POST.email'), true);
+        if ($params['id'] == 'create' && $this->app->get('POST.email')) {
+            $user = new \models\User('email', $this->app->get('POST.email'));
+            
+            $uid = $this->app->get('POST.uid');
+            $uid = $this->reformatUID($uid);
+            
+            $salt = self::salt();
+            $data = array('email' => $this->app->get('POST.email'),
+                          'firstname' => $this->app->get('POST.firstname'),
+                          'lastname' => $this->app->get('POST.lastname'),
+                          'uid' => $this->app->get('POST.uid'),
+                          'password' => self::hash($this->app->get('POST.password'), $salt),
+                          'salt' => $salt,
+                          'level' => 1,
+                          'status' => 1);
+                          
+            if ($user->exists) {
+                unset($data['level']);
+                $user->update($data);
+                $user->save();
+            } else {
+                $user = new \models\User('u_id', substr($uid, 0, 6));
+                if ($user->exists && strpos($user->data->name, $data['lastname']) !== false) {
+                    $data['class'] = $user->data->usermeta->bg;
+                    $user->update($data);
+                    $user->save();
+                }
+            }
+            
+            $app->set('SESSION.user', $user->info());
+            $app->reroute('/');
+        } else {
+            $this->reqLevel(3);
+            $this->tpl = false;
+        
+            $field = $app->get('POST.name');
+            $id = $app->get('POST.pk');
+            $value = $app->get('POST.value');
+            if ($value == '' || $value[0] == '[') {
+                echo "Ogiltigt värde";
+            } else {
+                $user = new \models\User('id', $id);
+                $user->update(array($field => $value));
+                $user->save();
+            }
+        }
     }
+    
     function put() {}
     function delete() {}
 }

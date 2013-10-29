@@ -14,13 +14,13 @@ class Log extends \controllers\Controller {
     function __construct($action, $message="", $data="") {
         parent::__construct();
         
-        $account = $this->app->get('SESSION.account');
+        $user = $this->app->get('SESSION.user');
         
         $info = array(
             'ts' => time(),
             'uri' => $this->app->get('URI'),
             'action' => $action,
-            'user' => $account['email'],
+            'user' => $user['email'],
             'msg' => $message,
             'data' => $data);
         $log = new \models\Log($info);

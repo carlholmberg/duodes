@@ -41,14 +41,16 @@ class Controller
 {
 
     public $lvl = 0; // 0: guest, 1: normal user, 2: lending, 3: teacher, 4: admin
+    public $uid = false;
     public $json = false;
     public $data;
     
     function __construct() {
         $this->app = \Base::instance();
-        if ($this->app->get('SESSION.account')) {
-            $account = $this->app->get('SESSION.account');
-            $this->lvl = $account['level'];
+        if ($this->app->get('SESSION.user')) {
+            $user = $this->app->get('SESSION.user');
+            $this->lvl = $user['level'];
+            $this->uid = $user['id'];
         }
     }
     

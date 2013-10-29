@@ -36,18 +36,19 @@ class Title extends \models\DBModel {
     function getCopies() {
         $copies = array();
         foreach($this->data->ownCopy as $c) {
-            $coll = array('Bibliotek', 'Kurslitteratur'); //tmp
             $cop = $c->export();
             if ($cop['user_id']) {
                 $cop['return_date'] = time(); //tmp
             
                 $cop['return_date'] = date('Y-m-d', $cop['return_date']);
-                $cop['borrowed_by'] = $c->user->name." ("/*.$c->user->class*/.")";
+                $cop['borrowed_by'] = $c->user->name." (".$c->user->class.")";
+                $cop['nid'] = $c->user->id;
             } else {
                 $cop['borrowed_by'] = '';
                 $cop['return_date'] = '';
+                $cop['nid'] = '';
             }
-            $cop['collection'] = $coll[rand(0,1)]; //tmp
+            if (!$cop['collection']) $cop['collection'] = 'Kurslitteratur';
             $cop['bc_print'] = false;
             $copies[] = $cop;
         }
@@ -71,6 +72,16 @@ class Title extends \models\DBModel {
         
 		return $titles;
     }
+    
+    static function updateBorrowed($title) {
+	    $borrowed = 0;
+	    foreach($title->ownCopy as $copy) {
+	        if ($copy->user) {
+	            $borrowed += 1;
+	        }
+	    }
+	    \R::store($title);
+	}
     
     function getData() {
         $data = array();

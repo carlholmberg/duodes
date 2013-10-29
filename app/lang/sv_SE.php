@@ -43,6 +43,7 @@ return array(
 	'User updated' => 'Användare uppdaterad',
 	'Search' => 'Sök',
 	'All' => 'Alla',
+	'Email' => 'Epost',
 	
 	'Filter name' => 'Filtrera namn',
 	'Filter title' => 'Filtrera titel',
@@ -54,6 +55,11 @@ return array(
 	'Name' => 'Namn',
 	'Barcode' => 'Streckkod',
 	'Barcodes' => 'Streckkoder',
+	'Class' => 'Basgrupp',
+	'Level' => 'Nivå',
+	'Type' => 'Typ',
+	'Status' => 'Status',
+	
 	'User id' => 'Personnummer',
 	'Subject' => 'Ämne',
 	'Title' => 'Titel',
@@ -75,11 +81,17 @@ return array(
 	'Save' => 'Spara',
 	'Find' => 'Sök',
 	
+	'Firstname' => 'Förnamn',
+	'Lastname' => 'Efternamn',
+	
 	'Print barcode' => 'Skriv ut streckkod',
 	'Labels in queue' => 'Etiketter i kö',
 	
 	'Add new title' => 'Lägg till nya verk',
 	'New title' => 'Ny titel',
+	'New user' => 'Ny användare',
+	'Import users' => 'Importera användare',
+	
 	'Show titles' => 'Visa titlar',
 	'My books' => 'Mina böcker',
 	'Borrow books' => 'Låna böcker',
@@ -99,6 +111,7 @@ return array(
 	'Circ' => 'Cirk',
 	'Circulation' => 'Cirkulation',
 	'History' => 'Historik',
+	'Collection' => 'Samling',
 		
 	'Log out' => 'Logga ut',
 	'Log in' => 'Logga in',
@@ -108,6 +121,9 @@ return array(
 	
 	'Delete title' => 'Radera titel',
 	'Are you sure you want to delete this title?' => 'Är du säker på att du vill radera den här titeln?',
+	
+	'Are you sure you want to refresh data for this title?' => 'Är du säker på att du vill ladda om data för den här titeln?',
+	'Refresh title' => 'Ladda om titel',
 	
 	// Error messages
 	'%1$s does not exist in the database.' => '%1$s finns inte i databasen.',

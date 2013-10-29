@@ -14,32 +14,67 @@ class Copy extends \models\DBModel {
     /* Model: Title
         id [auto]
         title [Model.Title]
-        borrowed_by [Model.User]
+        user [Model.User]
         return_date [date]
         collection [Model.Collection]
         barcode [str]
     */
     
-    function __construct() {
-    
+    function __construct($type, $val, $create=false) {
+        if ($create) {
+            $this->load('copy');
+        } else if ($type == 'id') {
+            $this->load('user', $val);
+        } else {
+            $this->data = \R::findOne('copy', ' '.$type.' = :val', 
+                array(':val' => $val)
+            );
+        }
+        $this->exists = false;
+        if ($this->data) {
+            $this->exists = true;
+            $this->active = (bool)$this->data->status;
+        }
     }
     
-    static function getHeader($lvl) {
-        $header = array(
-            'collection' => array(
-                'class' => 'group-word filter-false', 'placeholder' => '', 'name' => ''),
-            'barcode' => array(
-                'class' => '', 'placeholder' => '', 'name' => '{Barcode}'),
-            'borrowed_by' => array(
-                'class' => '', 'placeholder' => '', 'name' => '{Borrowed}'),
-            'return_date' => array(
-                'class' => '', 'placeholder' => '', 'name' => '{Return date}'),
-            'bc_print' => array(
-                'class' => '', 'placeholder' => '', 'name' => '{Print barcode}'));
+    function returnCopy() {
+        unset($copy->user);
+        \models\Title::updateBorrowed($copy->title);        
+        \R::store($copy);
+    }
+    
+    
+    static function getHeader($lvl, $for='title') {
+        if ($for == 'title') {
+            $header = array(
+                'collection' => array(
+                    'class' => 'group-word filter-false', 'placeholder' => '', 'name' => '{Collection}'),
+                'barcode' => array(
+                    'class' => '', 'placeholder' => '', 'name' => '{Barcode}'),
+                'borrowed_by' => array(
+                    'class' => '', 'placeholder' => '', 'name' => '{Borrowed}', 'href' => 'user', 'id' => true),
+                'return_date' => array(
+                    'class' => '', 'placeholder' => '', 'name' => '{Return date}'),
+                'bc_print' => array(
+                    'class' => '', 'placeholder' => '', 'name' => '{Print barcode}')
+            );
        
-        if ($lvl < 2) {
-            unset($header['borrowed_by']);
-            unset($header['bc_print']);
+            if ($lvl < 2) {
+                unset($header['borrowed_by']);
+                unset($header['bc_print']);
+            }
+        } else if ($for == 'user') {
+            $header = array(
+                'collection' => array(
+                    'class' => 'group-word filter-false', 'placeholder' => '', 'name' => '{Collection}'),
+                'title' => array(
+                    'class' => '', 'placeholder' => '', 'name' => '{Title}', 'href' => 'title', 'id' => true),
+                'barcode' => array(
+                    'class' => '', 'placeholder' => '', 'name' => '{Barcode}'),
+                
+                'return_date' => array(
+                    'class' => '', 'placeholder' => '', 'name' => '{Return date}'),
+            );
         }
         return $header;
     }

@@ -16,6 +16,7 @@
                 <div class="tab-pane fade active in" id="local">
                     <form class="form-inline" role="form" action="login/local" method="post">
                         <div class="panel-body">
+                            <h4>Om du inte aktiverat ditt konto måste du först logga in med <a href="#openid" data-toggle="tab">OpenID</a>.</h4>
                             <div class="form-group">
                                 <label for="email">Email address</label>
                                 <input type="email" class="form-control" name="email" id="email" placeholder="Enter email">

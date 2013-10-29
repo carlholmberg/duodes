@@ -39,7 +39,9 @@ class DBModel
     
     
     function update($data) {
-        $this->data->import($data);
+        if (is_array($data)) {
+            $this->data->import($data);
+        }
     }
     
     function save() {

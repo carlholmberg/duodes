@@ -27,9 +27,9 @@ class ViewController extends \controllers\Controller
         parent::__construct();
         $this->tpl = $this->loadTpl('main');
         $this->slots = array('base_href' => 'http://'.$this->app->get('HOST').$this->app->get('BASE').'/');
-        if ($this->app->get('SESSION.account')) {
-            $acc = $this->app->get('SESSION.account');
-            $this->slots['user'] = $acc['name'];
+        if ($this->app->get('SESSION.user')) {
+            $acc = $this->app->get('SESSION.user');
+            $this->slots['user'] = $acc['firstname'].' '.$acc['lastname'];
         } else {
             $this->slots['user'] = '';
         }
@@ -55,9 +55,12 @@ class ViewController extends \controllers\Controller
             $id = $item['id'];
             foreach(array_keys($header) as $cell) {
                 if (!isset($item[$cell])) continue;
+                
+                $nid = (isset($header[$cell]['id']))? $item['nid'] : $id;
+                
                 if ($item[$cell] == '') $item[$cell] = '-';
-                if (isset($header[$cell]['href'])) {
-                    $row->glue('cell', $row->get('acell')->injectAll(array('href' => $header[$cell]['href'], 'id'=>$id, 'cell'=>$item[$cell])));
+                if (isset($header[$cell]['href']) && $item[$cell] !== '-') {
+                    $row->glue('cell', $row->get('acell')->injectAll(array('href' => $header[$cell]['href'], 'id'=>$nid, 'cell'=>$item[$cell])));
                 } else {
                     $row->glue('cell', $row->get('cell')->injectAll(array('id'=>$id, 'cell'=>$item[$cell])));
                 }
@@ -123,15 +126,11 @@ class ViewController extends \controllers\Controller
                             'icon' => 'star',
                             'level' => 0,
                             'submenu' => array(
-                                array('link' => '#',
-                                      'title' => '{My books}',
-                                      'icon'=> 'book',
-                                      'level' => 0),
-                                array('link' => '#',
+                                /*array('link' => '#',
                                       'title' => '{Group}',
                                       'icon' => 'th-list',
-                                      'level' => 2),
-                                array('link' => '#',
+                                      'level' => 2), */
+                                array('link' => 'user/'.$this->uid,
                                       'title' => '{Profile}',
                                       'icon'=> 'cog',
                                       'level' => 0),

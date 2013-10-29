@@ -12,7 +12,7 @@
     
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
-
+        
         <script src="js/jquery.js"></script>
         <script src="js/bootstrap.js"></script>
         
@@ -54,6 +54,29 @@ $(document).ready(function() {
         }
     }); 
     
+    $('#refresh').click(function() {
+        bootbox.dialog({
+            message: "{Are you sure you want to refresh data for this title?}",
+            title: "{Refresh title}",
+            buttons: {
+                success: {
+                    label: "{No}",
+                    className: "btn-default"
+                },
+                danger: {
+                    label: "{Yes}",
+                    className: "btn-danger",
+                    callback: function() {
+                        $.post(location.href, {action: 'refresh', isbn: '#isbn#'}, function(result) {
+                            location.href = result;
+                        });
+                    }
+                },
+            }
+        });
+
+    });
+    
     $('#delete').click(function() {
         bootbox.dialog({
             message: "{Are you sure you want to delete this title?}",
@@ -87,7 +110,7 @@ $(document).ready(function() {
         <!-- /cut:xeditable -->
         
         <!-- paste:extrahead -->
-  
+        <link rel="stylesheet" type="text/css" href="css/app.css" />
     </head>
   
     <body>
