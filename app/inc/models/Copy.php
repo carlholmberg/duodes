@@ -38,9 +38,9 @@ class Copy extends \models\DBModel {
     }
     
     function returnCopy() {
-        unset($copy->user);
-        \models\Title::updateBorrowed($copy->title);        
-        \R::store($copy);
+        unset($this->data->user);
+        \models\Title::updateBorrowed($this->data->title);        
+        $this->save();
     }
     
     

@@ -7,10 +7,10 @@
             <label for="copies" class="control-label">{New copies}:</label>
         </div>
         <div class="form-group">
-            <input type="number" class="form-control" id="copies" placeholder="{Copies}">
+            <input type="number" class="form-control" name="copies" id="copies" placeholder="{Copies}">
         </div>
         <div class="form-group">
-            <select id="collection" class="from-control'">
+            <select id="collection" name="collection" class="from-control'">
                 <option>Bibliotek</option><option>Kurslitteratur</option>
             </select>
         </div>
@@ -25,7 +25,7 @@
     </div>
     <div class="col-md-5">
         <h5>{Author}</h5><p id="author" data-type="text" data-pk="#id#" data-original-title="{Author}" data-url="title/#id#" class="editable editable-click">#author#</p>
-        <h5>ISBN <span id="refresh" class="btn btn-xs btn-warning pull-right"  title="{Refresh title}"><span class="glyphicon glyphicon-refresh"></span></span></h5><p id="isbn" data-type="text" data-pk="#id#" data-original-title="ISBN" data-url="title/#id#" class="editable editable-click">#isbn#</p>
+        <h5>ISBN <!-- cut:isbnedit --><span id="refresh" class="btn btn-xs btn-warning pull-right"  title="{Refresh title}"><span class="glyphicon glyphicon-refresh"></span></span><!-- /cut:isbnedit --><!-- paste:isbnedit --></h5><p id="isbn" data-type="text" data-pk="#id#" data-original-title="ISBN" data-url="title/#id#" class="editable editable-click">#isbn#</p>
         <h5>{Language}</h5><p id="lang" data-type="select" data-value="#lang#" data-pk="#id#" data-original-title="{Language}" data-url="title/#id#" class="editable editable-click" data-source="[{value: 'se', text: 'Svenska'}, {value: 'en', text: 'Engelska'}, {value: 'de', text: 'Tyska'}, {value: 'fr', text: 'Franska'}, {value: 'sp', text: 'Spanska'}]"></p>
         <h5>{Description}</h5><p id="desc" data-type="textarea" data-pk="#id#" data-original-title="{Description}" data-url="title/#id#" class="editable editable-click">#desc#</p>
         <h5>{Keywords}</h5><p id="keywords" data-type="text" data-pk="#id#" data-original-title="{Keywords}" data-url="title/#id#" class="editable editable-click" >#keywords#</p>

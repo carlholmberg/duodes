@@ -3,7 +3,15 @@
     <h2>Kunskapsgymnasiet i Norrköping</h2>
     <div class="well">
         <p>Vad söker du?</p>
-        <p><a class="btn btn-primary btn-lg">Start Now!</a></p>
+        <form class="form-horizontal" role="search">
+            <div class="form-group col-lg-8">
+                <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <div class="form-group col-lg-2">
+             <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+             </div>
+        </form>
+        <br class="clearfix">
     </div>
 </div>
 

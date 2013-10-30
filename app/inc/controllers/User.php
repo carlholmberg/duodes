@@ -186,5 +186,17 @@ class User extends \controllers\ViewController {
     }
     
     function put() {}
-    function delete() {}
+    
+    function delete($app, $params) {
+        $this->reqLevel(3);
+        $this->tpl = false;
+        
+        $user = new \models\User('id', $params['id']);
+        $data = serialize($user->data->export());
+        new \controllers\Log('delete', 'Deleted user "'. $user->data->email.'"', $data);
+
+        $user->delete();
+
+        echo $app->get('BASE').'/user/all';
+    }
 }

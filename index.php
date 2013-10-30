@@ -68,11 +68,11 @@ $app->set('UI','app/ui/');
 $app->set('TEMP', 'data/temp/');
 $app->set('TZ', 'Europe/Stockholm');
 
-$app->set('ONERROR', function() {
+/*$app->set('ONERROR', function() {
     if ($app->get('AJAX')) return;
     $m = new \controllers\Main;
     $m->e404();
-});
+});*/
 
 $app->set('LOC','app/lang/');
 $app->set('LANG', 'sv_SE');

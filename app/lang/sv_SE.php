@@ -44,6 +44,8 @@ return array(
 	'Search' => 'Sök',
 	'All' => 'Alla',
 	'Email' => 'Epost',
+	'user' => 'användare',
+	'title' => 'titel',
 	
 	'Filter name' => 'Filtrera namn',
 	'Filter title' => 'Filtrera titel',
@@ -106,8 +108,6 @@ return array(
 	'Borrowed books for' => 'Utlånade böcker för',
 	'in subject' => 'i ämne',
 	'by' => 'efter',
-	'user' => 'låntagare',
-	'title' => 'titel',
 	'Circ' => 'Cirk',
 	'Circulation' => 'Cirkulation',
 	'History' => 'Historik',
@@ -121,6 +121,7 @@ return array(
 	
 	'Delete title' => 'Radera titel',
 	'Are you sure you want to delete this title?' => 'Är du säker på att du vill radera den här titeln?',
+	'Are you sure you want to delete this' => 'Är du säker på att du vill radera denna',
 	
 	'Are you sure you want to refresh data for this title?' => 'Är du säker på att du vill ladda om data för den här titeln?',
 	'Refresh title' => 'Ladda om titel',

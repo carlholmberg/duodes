@@ -11,10 +11,16 @@
 namespace controllers;
 
 class Copy extends \controllers\Controller {
-    function get($f3, $params) {
+    function get($app, $params) {
         echo 'Copy (GET): name '.$params['id'];
     }
-    function post() {}
+    function post($app, $params) {
+        $name = $params['name'];
+        $value = $params['value'];
+        $id = $params['pk'];
+        
+        trigger_error(var_dump($_POST), E_USER_ERROR);
+    }
     function put() {}
     function delete() {}
 }

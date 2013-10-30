@@ -1,11 +1,19 @@
 <div class="container">
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#return" data-toggle="tab"><span class="glyphicon glyphicon-repeat"></span> {Return}</a></li>
+    <!-- cut:msg -->
+    <div class="alert alert-warning fade in">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>#msg#</strong>
+      </div>
+    <!-- /cut:msg -->
+    <!-- paste:msg -->
+          
+    <ul class="nav nav-tabs" id="tabs">
+        <li><a href="#return" data-toggle="tab"><span class="glyphicon glyphicon-repeat"></span> {Return}</a></li>
         <li><a href="#borrow" data-toggle="tab"><span class="glyphicon glyphicon-share-alt"></span> {Borrow}</a></li>
     </ul>
-    <form class="form" method="post" action="circ" >
+    <form class="form" id="circ" method="post" action="circ" >
         <div class="tab-content">
-            <div class="tab-pane active container well" id="return">
+            <div class="tab-pane container well" id="return">
                 <h4>{Scan or enter the barcode for the book}</h4>
                 <div class="input-append">
                     <input type="text" class="span2" id="barcode" name="barcode" />
@@ -27,9 +35,25 @@
 
 <script type="text/javascript">
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        var pieces = e.target.toString().split('/');
-        $(pieces.pop()).find('input').first().focus();
+        if (e.target) {
+            var pieces = e.target.toString().split('/');
+            $(pieces.pop()).find('input').first().focus();
+        }
+        if (e.relatedTarget) {
+            var pieces = e.relatedTarget.toString().split('/');
+            $(pieces.pop()).find('input').val('');
+        }
     });
+    $('#tabs a[href="##active#"]').tab('show');
     
-    $("#return input").focus();
+      $('#circ').on('submit', function(e) {
+        var bc1 = $('#bc1');
+        var bc2 = $('#bc2');
+        var bc = $('#barcode');
+        if (bc.val() !== '') return;
+        if (bc1.val() !== '' && bc2.val() !== '') return;
+        if (bc1.val() !== '' && bc2.val() == '') bc2.focus();
+        if (bc2.val() !== '' && bc1.val() == '') bc1.focus();
+        e.preventDefault();
+    });
 </script>

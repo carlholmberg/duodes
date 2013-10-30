@@ -28,9 +28,7 @@ class Title extends \models\DBModel {
         borrowed [int]
     */
     function __construct($id=false) {
-        if ($id) {
-            $this->load('title', $id);
-        }
+        $this->load('title', $id);
     }
     
     function getCopies() {
@@ -49,7 +47,11 @@ class Title extends \models\DBModel {
                 $cop['nid'] = '';
             }
             if (!$cop['collection']) $cop['collection'] = 'Kurslitteratur';
-            $cop['bc_print'] = false;
+            
+            $cop['bc_print'] = 'No';
+            if (\R::related($c, 'barcode')) { 
+                $cop['bc_print'] = 'Yes';
+            }
             $copies[] = $cop;
         }
         return $copies;
@@ -116,5 +118,42 @@ class Title extends \models\DBModel {
             unset($header['borrowed']);
         }
         return $header;
+    }
+    
+    function deleteCopies() {
+        foreach($this->data->ownCopy as $copy) {
+            \R::trash($copy);
+        }
+    }
+    
+    function addCopies($n, $coll) {
+        $title = &$this->data;
+        $copies = \R::dispense('copy', $n);
+		$barcodes = \R::dispense('barcode', $n);
+
+		if (!is_array($copies)) {
+			$copies = array($copies);
+			$barcodes = array($barcodes);
+		}
+
+		foreach($copies as $i => $copy) {
+			$copy->barcode = '';
+			$copy->title = $title;
+			$copy->collection = $coll;
+			$c_id = \R::store($copy);
+			$copy->barcode = strtoupper(base_convert($title->id.$c_id, 10, 36)); 
+		
+			$barcodes[$i]->barcode = $copy->barcode;
+			$barcodes[$i]->text = $title->title;
+			$barcodes[$i]->type = 'copy';
+			$barcodes[$i]->b_id = $title->id;
+			
+			\R::associate($barcodes[$i], $copy);
+			$title->ownCopy[] = $copy;
+		}
+		$title->total = count($title->ownCopy);
+		\R::storeAll($barcodes);
+		\R::storeAll($copies);
+		$this->save();
     }
 }

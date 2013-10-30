@@ -16,6 +16,7 @@ require_once('app/lib/StampTE.php');
 class ViewController extends \controllers\Controller
 {
     public $tpl;
+    public $type;
     public $page;
     public $slots;
     public $pieces = array();
@@ -44,20 +45,85 @@ class ViewController extends \controllers\Controller
         return false;
     }
     
+    function buildCopyTable($header, $data) {
+        foreach ($header as $key=>$val) {
+            $this->addPiece('page', 'hcell', 'hcell', $val);
+            $this->addPiece('page', 'fcell', 'fcell', $val);
+        }
+        $tpl = $this->loadTpl('tablesorter-row');
+        
+        foreach ($data as $item) {
+            $row = $tpl->get('row');
+            $id = $item['id'];
+            foreach(array_keys($header) as $cell) {
+                if ($cell == 'borrowed_by' && $item[$cell] !== '') {
+                    $nid = (isset($header[$cell]['id']))? $item['nid'] : $id;
+                    if (isset($header[$cell]['href']) && $item[$cell] !== '-') {
+                        $row->glue('cell', $row->get('acell')->injectAll(array('href' => $header[$cell]['href'], 'id'=>$nid, 'cell'=>$item[$cell])));
+                    } else {
+                        $row->glue('cell', $row->get('cell')->injectAll(array('id'=>$id, 'cell'=>$item[$cell])));
+                    }
+                } else if ($cell == 'borrowed_by') {
+                    $row->glue('cell', $row->get('scell')->injectAll(
+                        array('href' => 'copy',
+                              'field' => $cell,
+                              'id' => $id,
+                              'value' => $item[$cell],
+                              'source' => 'ajax/users',
+                              'name' => $header[$cell]['name'])));   
+                } else if ($cell == 'collection') {
+                      
+                    $row->glue('cell', $row->get('scell')->injectAll(
+                        array('href' => 'copy',
+                              'field' => $cell,
+                              'id' => $id,
+                              'value' => $item[$cell],
+                              'source' => 'ajax/collections',
+                              'name' => $header[$cell]['name'])));           
+                } else if ($cell == 'bc_print') {
+                      
+                    $row->glue('cell', $row->get('scell')->injectAll(
+                        array('href' => 'copy',
+                              'field' => $cell,
+                              'id' => $id,
+                              'value' => $item[$cell],
+                              'source' => '{"Yes": "Ja", "No": "Nej"}',
+                              'name' => $header[$cell]['name'])));           
+                } else {
+                  
+                    $row->glue('cell', $row->get('ecell')->injectAll(
+                        array('href' => 'copy',
+                              'field' => $cell,
+                              'id' => $id,
+                              'value' => $item[$cell],
+                              'name' => $header[$cell]['name']))); 
+                
+                }
+            
+            
+
+            }
+            $tpl->glue('row', $row);
+        }
+        $this->addPiece('page', $tpl, 'tbody');
+    }
+    
+    
     function buildTable($header, $data, $return=false) {
         foreach ($header as $key=>$val) {
             $this->addPiece('page', 'hcell', 'hcell', $val);
             $this->addPiece('page', 'fcell', 'fcell', $val);
         }
         $tpl = $this->loadTpl('tablesorter-row');
+        
         foreach ($data as $item) {
             $row = $tpl->get('row');
             $id = $item['id'];
             foreach(array_keys($header) as $cell) {
-                if (!isset($item[$cell])) continue;
+                if (!isset($item[$cell])) $item[$cell] == '-';
                 
                 $nid = (isset($header[$cell]['id']))? $item['nid'] : $id;
-                
+                if ($item[$cell] == '' && isset($header[$cell]['href']) && !isset($header[$cell]['id'])) $item[$cell] = 'Tom';
                 if ($item[$cell] == '') $item[$cell] = '-';
                 if (isset($header[$cell]['href']) && $item[$cell] !== '-') {
                     $row->glue('cell', $row->get('acell')->injectAll(array('href' => $header[$cell]['href'], 'id'=>$nid, 'cell'=>$item[$cell])));
@@ -74,6 +140,7 @@ class ViewController extends \controllers\Controller
     }
 
     function setPage($page) {
+        $this->type = $page;
         if (file_exists($this->app->get('UI').$page.'.tpl')) {
             $this->page = new \StampTE(file_get_contents($this->app->get('UI').$page.'.tpl'));
         }

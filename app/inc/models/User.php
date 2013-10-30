@@ -42,6 +42,13 @@ class User extends \models\DBModel {
     }
 
     
+    function borrow($copy) {
+        $this->data->ownCopy[] = $copy->data;
+        \models\Title::updateBorrowed($copy->data->title);
+        $this->save();
+    }
+    
+    
     function getData() {
         $data = array();
         if ($this->data) {

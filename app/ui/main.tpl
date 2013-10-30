@@ -67,7 +67,9 @@ $(document).ready(function() {
                     label: "{Yes}",
                     className: "btn-danger",
                     callback: function() {
-                        $.post(location.href, {action: 'refresh', isbn: '#isbn#'}, function(result) {
+                        var loc = location.href.toString().replace('new', '#id#');
+                        var isbn = $('#isbn').text();
+                        $.post(loc, {action: 'refresh', isbn: isbn}, function(result) {
                             location.href = result;
                         });
                     }
@@ -78,9 +80,16 @@ $(document).ready(function() {
     });
     
     $('#delete').click(function() {
+        var url = location.href.split('/');
+        url.pop();
+        var what = url.pop();
+        var strs = {};
+        strs['title'] = '{title}';
+        strs['user'] = '{user}';
+        
         bootbox.dialog({
-            message: "{Are you sure you want to delete this title?}",
-            title: "{Delete title}",
+            message: "{Are you sure you want to delete this} "+strs[what]+"?",
+            title: "{Delete} "+strs[what],
             buttons: {
                 success: {
                     label: "{No}",
@@ -170,8 +179,8 @@ $(document).ready(function() {
                     <div class="col-md-4">Duodes &copy; 2013 Talgank</div>
                         <div class="col-md-4">
                             <ul class="pager">
-                                <li><a href="#">{About} Duodes</a></li>
-                                <li><a href="#">Kontakta Talgdank</a></li>
+                                <!--<li><a href="#">{About} Duodes</a></li>
+                                <li><a href="#">Kontakta Talgdank</a></li>-->
                             </ul>
                         </div>
                         <div class="col-md-4"><img src="img/duodes.png" alt="branding" width="300" />

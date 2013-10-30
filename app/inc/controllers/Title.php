@@ -17,7 +17,21 @@ class Title extends \controllers\ViewController {
         
         switch($id) {
             case 'new':
-                echo 'New title';
+                $this->menu = true;
+                $this->footer = true;
+                $title = new \models\Title();
+                $title->save();
+                $id = $title->data->id;
+                $this->slots['id'] = $id;
+                $slots = array('title' => '', 'author' => '', 'isbn' => '', 'desc' => '', 'keywords' => '', 'publisher' => '',  'date' => '', 'code' => '', 'url' => '');
+                $this->addSlots($slots);
+                $this->slots['pagetitle'] = 'Ny titel';
+                $this->setPage('title');
+                if ($this->hasLevel(4)) {
+                    $this->addPiece('main', 'xeditable', 'extrahead');
+                    $this->addPiece('page', 'editing', 'editing');
+                }
+                
                 break;
             
             case 'all':
@@ -51,10 +65,12 @@ class Title extends \controllers\ViewController {
                     if ($this->hasLevel(4)) {
                         $this->addPiece('main', 'xeditable', 'extrahead');
                         $this->addPiece('page', 'editing', 'editing');
+                        $this->addPiece('page', 'isbnedit', 'isbnedit');
                     }
                     if (count($copies)) {
                         $header = \models\Copy::getHeader($this->lvl);
-                        $this->buildTable($header, $copies);
+                        if($this->hasLevel(4)) $this->buildCopyTable($header, $copies);
+                        else $this->buildTable($header, $copies);
                     }
                 } else {
                     $app->reroute('/title/all');
@@ -88,8 +104,9 @@ class Title extends \controllers\ViewController {
             $copies = $app->get('POST.copies');
             $collection = $app->get('POST.collection');
             
-            // Lägg till kopior till titel
-            
+            $title = new \models\Title($params['id']);
+            $title->addCopies($copies, $collection);
+                        
             $app->reroute('/title/'.$params['id']);
         }
         
@@ -118,6 +135,7 @@ class Title extends \controllers\ViewController {
         $data = serialize($title->data->export());
         new \controllers\Log('delete', 'Deleted title "'. $title->data->title.'"', $data);
 
+        $title->deleteCopies();
         $title->delete();
 
         echo $this->app->get('BASE').'/title/all';
