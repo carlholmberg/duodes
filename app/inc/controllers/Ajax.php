@@ -19,8 +19,23 @@ class Ajax extends \controllers\Controller {
                 break;
             
             case 'collections':
-                echo '{"Bibliotek": "Bibliotek", "Kurslitteratur": "Kurslitteratur", "WS-litteratur" : "WS-litteratur", "Referenslitteratur" : "Referenslitteratur"}';
+                $collections = \controllers\Collection::getCollections();
+                $out = array();
+                foreach($collections as $coll) {
+                    $out[] = sprintf("{\"%s\": \"%s\"}", $coll['id'], $coll['name']);
+                }
+                
+                echo "[\n".implode(",\n", $out)."\n]";
                 break;
+            
+            case 'collections-opt':
+                $collections = \controllers\Collection::getCollections();
+                foreach($collections as $coll) {
+                    printf("<option value=\"%s\">%s</option>", $coll['id'], $coll['name']);
+                }
+
+                break;
+                
             case 'users':
                 $users = \models\User::getUsers();
                 $out = array();

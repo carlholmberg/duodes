@@ -93,6 +93,9 @@ class User extends \controllers\ViewController {
                 $this->footer = true;
                 $this->addPiece('main', 'tablesorter', 'extrahead');
                 $ids = \models\User::getIDs();
+                if ($this->hasLevel(4)) {
+                    $this->addPiece('main', 'xeditable', 'extrahead');
+                }
                 $this->slots['pagetitle'] = '{Users}';
                 $this->slots['ids'] = count($ids);
                 $this->setPage('users');
@@ -113,9 +116,8 @@ class User extends \controllers\ViewController {
                 $this->menu = true;
                 $this->footer = true;
                 $user = new \models\User('id', $params['id']);
-                
                 if($user->exists) {
-                    $copies = $user->getCopies();
+                    $copies = \controllers\Copy::getCopies($user->data, $this->lvl);
                     $this->slots['id'] = $params['id'];
                     $this->addSlots($user->getData());
                     $this->slots['pagetitle'] = $this->slots['user'];
@@ -158,7 +160,7 @@ class User extends \controllers\ViewController {
                 $user->update($data);
                 $user->save();
             } else {
-                $user = new \models\User('u_id', substr($uid, 0, 6));
+                $user = new \models\User('uid', substr($uid, 0, 6));
                 if ($user->exists && strpos($user->data->name, $data['lastname']) !== false) {
                     $data['class'] = $user->data->usermeta->bg;
                     $user->update($data);
@@ -175,14 +177,39 @@ class User extends \controllers\ViewController {
             $field = $app->get('POST.name');
             $id = $app->get('POST.pk');
             $value = $app->get('POST.value');
-            if ($value == '' || $value[0] == '[') {
+            
+            $user = new \models\User('id', $id);
+            
+            if ($field == 'bc_print') {
+                if ($value) {
+                    $this->newBarcode($user->data);
+			    } else {
+			        $barcode = \R::relatedOne($user->data, 'barcode');
+			        if ($barcode) \R::trash($barcode);
+			    } 
+			}
+            else if ($value == '' || $value[0] == '[') {
                 echo "Ogiltigt värde";
             } else {
-                $user = new \models\User('id', $id);
                 $user->update(array($field => $value));
                 $user->save();
             }
         }
+    }
+    
+    function newBarcode($user) {
+        $barcode = \R::dispense('barcode');
+        $barcode->barcode = $user->barcode;
+		$barcode->text = $this->formatName($user);
+		$barcode->type = 'user';
+		$barcode->b_id = $user->id;
+		\R::store($barcode);
+		\R::associate($barcode, $user);
+    }
+    
+    function formatName($user) {
+        $name = $user->lastname.', '.$user->firstname.' ('.$user->class.')';
+        return $name;
     }
     
     function put() {}

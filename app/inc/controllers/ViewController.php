@@ -28,6 +28,12 @@ class ViewController extends \controllers\Controller
         parent::__construct();
         $this->tpl = $this->loadTpl('main');
         $this->slots = array('base_href' => 'http://'.$this->app->get('HOST').$this->app->get('BASE').'/');
+        
+        if ($this->app->get('SESSION.msg')) {
+            $this->addPiece('main', 'msg', 'msg', array('msg' => $this->app->get('SESSION.msg'), 'type' => 'warning'));
+            $this->app->set('SESSION.msg', false);
+        }
+        
         if ($this->app->get('SESSION.user')) {
             $acc = $this->app->get('SESSION.user');
             $this->slots['user'] = $acc['firstname'].' '.$acc['lastname'];
@@ -46,6 +52,7 @@ class ViewController extends \controllers\Controller
     }
     
     function buildCopyTable($header, $data) {
+    
         foreach ($header as $key=>$val) {
             $this->addPiece('page', 'hcell', 'hcell', $val);
             $this->addPiece('page', 'fcell', 'fcell', $val);
@@ -57,7 +64,7 @@ class ViewController extends \controllers\Controller
             $id = $item['id'];
             foreach(array_keys($header) as $cell) {
                 if ($cell == 'borrowed_by' && $item[$cell] !== '') {
-                    $nid = (isset($header[$cell]['id']))? $item['nid'] : $id;
+                    $nid = (isset($header[$cell]['uid']))? $item['uid'] : $id;
                     if (isset($header[$cell]['href']) && $item[$cell] !== '-') {
                         $row->glue('cell', $row->get('acell')->injectAll(array('href' => $header[$cell]['href'], 'id'=>$nid, 'cell'=>$item[$cell])));
                     } else {
@@ -77,7 +84,7 @@ class ViewController extends \controllers\Controller
                         array('href' => 'copy',
                               'field' => $cell,
                               'id' => $id,
-                              'value' => $item[$cell],
+                              'value' => $item['collection_id'],
                               'source' => 'ajax/collections',
                               'name' => $header[$cell]['name'])));           
                 } else if ($cell == 'bc_print') {
@@ -87,7 +94,7 @@ class ViewController extends \controllers\Controller
                               'field' => $cell,
                               'id' => $id,
                               'value' => $item[$cell],
-                              'source' => '{"Yes": "Ja", "No": "Nej"}',
+                              'source' => '{1: "Ja", 0: "Nej"}',
                               'name' => $header[$cell]['name'])));           
                 } else {
                   
@@ -110,6 +117,7 @@ class ViewController extends \controllers\Controller
     
     
     function buildTable($header, $data, $return=false) {
+        
         foreach ($header as $key=>$val) {
             $this->addPiece('page', 'hcell', 'hcell', $val);
             $this->addPiece('page', 'fcell', 'fcell', $val);
@@ -120,12 +128,27 @@ class ViewController extends \controllers\Controller
             $row = $tpl->get('row');
             $id = $item['id'];
             foreach(array_keys($header) as $cell) {
-                if (!isset($item[$cell])) $item[$cell] == '-';
+                if (!isset($item[$cell])) $item[$cell] = '';
                 
-                $nid = (isset($header[$cell]['id']))? $item['nid'] : $id;
+                if (isset($header[$cell]['tid'])) {
+                    $nid = (isset($item['tid']))? $item['tid'] : $id;
+                } else if (isset($header[$cell]['tid'])) {
+                    $nid = (isset($item['uid']))? $item['uid'] : $id;
+                } else {
+                    $nid = $id;
+                }
+                
                 if ($item[$cell] == '' && isset($header[$cell]['href']) && !isset($header[$cell]['id'])) $item[$cell] = 'Tom';
                 if ($item[$cell] == '') $item[$cell] = '-';
-                if (isset($header[$cell]['href']) && $item[$cell] !== '-') {
+                if ($cell == 'bc_print') {
+                    $row->glue('cell', $row->get('scell')->injectAll(
+                        array('href' => 'user',
+                              'field' => $cell,
+                              'id' => $nid,
+                              'value' => $item[$cell],
+                              'source' => '{1: "Ja", 0: "Nej"}',
+                              'name' => $header[$cell]['name'])));
+                } else if (isset($header[$cell]['href']) && $item[$cell] !== '-') {
                     $row->glue('cell', $row->get('acell')->injectAll(array('href' => $header[$cell]['href'], 'id'=>$nid, 'cell'=>$item[$cell])));
                 } else {
                     $row->glue('cell', $row->get('cell')->injectAll(array('id'=>$id, 'cell'=>$item[$cell])));
@@ -149,7 +172,8 @@ class ViewController extends \controllers\Controller
     function addSlots($arr) {
         if (is_array($arr)) {
             foreach($arr as $k => $v) {
-                $this->slots[$k] = $v;
+                if (is_string($v))
+                    $this->slots[$k] = $v;
             }
         }
     }
@@ -234,7 +258,8 @@ class ViewController extends \controllers\Controller
          
         $this->tpl->glue('menu', $themenu);
     }
-    
+
+
     function __destruct() {
         if ($this->tpl) {
             $this->addPieces();

@@ -11,7 +11,6 @@
         </div>
         <div class="form-group">
             <select id="collection" name="collection" class="from-control'">
-                <option>Bibliotek</option><option>Kurslitteratur</option>
             </select>
         </div>
         <button type="submit" class="btn btn-default">{Add}</button>
@@ -20,7 +19,7 @@
     <!-- paste:editing -->
     <h1 id="title" data-type="text" data-pk="#id#" data-original-title="{Title}" data-url="title/#id#" class="editable editable-click">#title#</h1>
     <div class="col-md-2">
-        <img id="cover" src="image/#id#" alt="Title image" />
+        <img id="cover" src="image/#isbn#" alt="Title image" />
         <p><strong>Antal: #total#</strong><br><em>(varav #borrowed# utlånade)</em></p>
     </div>
     <div class="col-md-5">
@@ -37,6 +36,7 @@
         <h5>{Code}</h5><p id="code" data-type="text" data-pk="#id#" data-original-title="{Code}" data-url="title/#id#" class="editable editable-click">#code#</p>
             
         <h5>Länk:</h5><p><a href="#url#" title="Länk till post om titel">#url#</a></p>
+        <h5>{Registered}</h5><p id="registered" data-type="text" data-pk="#id#" data-original-title="{Registered}" data-url="title/#id#" class="editable editable-click">#registered#</p>
     </div>
 </div>
 

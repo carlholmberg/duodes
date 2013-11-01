@@ -24,7 +24,7 @@ class Copy extends \models\DBModel {
         if ($create) {
             $this->load('copy');
         } else if ($type == 'id') {
-            $this->load('user', $val);
+            $this->load('user', intval($val));
         } else {
             $this->data = \R::findOne('copy', ' '.$type.' = :val', 
                 array(':val' => $val)
@@ -52,7 +52,7 @@ class Copy extends \models\DBModel {
                 'barcode' => array(
                     'class' => '', 'placeholder' => '', 'name' => '{Barcode}'),
                 'borrowed_by' => array(
-                    'class' => '', 'placeholder' => '', 'name' => '{Borrowed}', 'href' => 'user', 'id' => true),
+                    'class' => '', 'placeholder' => '', 'name' => '{Borrowed}', 'href' => 'user', 'uid' => true),
                 'return_date' => array(
                     'class' => '', 'placeholder' => '', 'name' => '{Return date}'),
                 'bc_print' => array(
@@ -68,7 +68,7 @@ class Copy extends \models\DBModel {
                 'collection' => array(
                     'class' => 'group-word filter-false', 'placeholder' => '', 'name' => '{Collection}'),
                 'title' => array(
-                    'class' => '', 'placeholder' => '', 'name' => '{Title}', 'href' => 'title', 'id' => true),
+                    'class' => '', 'placeholder' => '', 'name' => '{Title}', 'href' => 'title', 'tid' => true),
                 'barcode' => array(
                     'class' => '', 'placeholder' => '', 'name' => '{Barcode}'),
                 

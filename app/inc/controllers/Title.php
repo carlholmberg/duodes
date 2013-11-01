@@ -23,7 +23,7 @@ class Title extends \controllers\ViewController {
                 $title->save();
                 $id = $title->data->id;
                 $this->slots['id'] = $id;
-                $slots = array('title' => '', 'author' => '', 'isbn' => '', 'desc' => '', 'keywords' => '', 'publisher' => '',  'date' => '', 'code' => '', 'url' => '');
+                $slots = array('title' => '', 'author' => '', 'isbn' => '', 'desc' => '', 'keywords' => '', 'publisher' => '',  'date' => '', 'code' => '', 'url' => '', 'registered' => date('Y-m'));
                 $this->addSlots($slots);
                 $this->slots['pagetitle'] = 'Ny titel';
                 $this->setPage('title');
@@ -56,11 +56,13 @@ class Title extends \controllers\ViewController {
                 $title = new \models\Title($params['id']);
                 
                 if($title->exists) {
-                    $copies = $title->getCopies();
+                    $copies = \controllers\Copy::getCopies($title->data, $this->lvl);
+                    
                     $this->slots['id'] = $params['id'];
-                    $this->addSlots($title->getData());
+                    $this->addSlots($title->getData());                
                     $this->slots['pagetitle'] = $this->slots['title'];
                     $this->setPage('title');
+
                     $this->addPiece('main', 'tablesorter', 'extrahead');
                     if ($this->hasLevel(4)) {
                         $this->addPiece('main', 'xeditable', 'extrahead');
@@ -72,6 +74,7 @@ class Title extends \controllers\ViewController {
                         if($this->hasLevel(4)) $this->buildCopyTable($header, $copies);
                         else $this->buildTable($header, $copies);
                     }
+                    
                 } else {
                     $app->reroute('/title/all');
                 }
@@ -88,9 +91,9 @@ class Title extends \controllers\ViewController {
             if ($app->get('POST.action') == 'refresh') {
                 $isbn = $app->get('POST.isbn');
                 $res = self::queryLibris($isbn);
-                if (!$res) {
+                /*if (!$res) {
                     $res = self::queryOpenLib($isbn);
-                }
+                }*/
                 $title = new \models\Title($params['id']);
                 $title->update($res);
                 $title->save();
@@ -102,6 +105,9 @@ class Title extends \controllers\ViewController {
         
         if (isset($params['action'])) {
             $copies = $app->get('POST.copies');
+            if ($copies < 1) {
+                $app->reroute('/title/'.$params['id']);
+            }
             $collection = $app->get('POST.collection');
             
             $title = new \models\Title($params['id']);

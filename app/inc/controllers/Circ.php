@@ -18,10 +18,6 @@ class Circ extends \controllers\ViewController {
         $this->footer = true;
         $this->setPage('circ');
         $this->slots['pagetitle'] = '{Circ}';
-        if ($app->get('SESSION.msg')) {
-            $this->addPiece('page', 'msg', 'msg', array('msg' => $app->get('SESSION.msg')));
-            $app->set('SESSION.msg', false);
-        }
         
         if ($app->get('SESSION.circ')) {
             $this->slots['active'] = $app->get('SESSION.circ');
@@ -37,7 +33,7 @@ class Circ extends \controllers\ViewController {
         if ($copy->data->user) {
             new \controllers\Log('borrow', $user->data->email.' tried to borrowed copy "'. $copy->data->barcode.'"', serialize($data));
             $this->app->set('SESSION.msg', 'Boken är redan utlånad');
-            $app->set('SESSION.circ', 'borrow');
+            $this->app->set('SESSION.circ', 'borrow');
             $this->app->reroute('/circ');
         }
         

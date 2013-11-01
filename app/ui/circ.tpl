@@ -1,12 +1,4 @@
-<div class="container">
-    <!-- cut:msg -->
-    <div class="alert alert-warning fade in">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <strong>#msg#</strong>
-      </div>
-    <!-- /cut:msg -->
-    <!-- paste:msg -->
-          
+<div class="container">  
     <ul class="nav nav-tabs" id="tabs">
         <li><a href="#return" data-toggle="tab"><span class="glyphicon glyphicon-repeat"></span> {Return}</a></li>
         <li><a href="#borrow" data-toggle="tab"><span class="glyphicon glyphicon-share-alt"></span> {Borrow}</a></li>

@@ -31,32 +31,6 @@ class Title extends \models\DBModel {
         $this->load('title', $id);
     }
     
-    function getCopies() {
-        $copies = array();
-        foreach($this->data->ownCopy as $c) {
-            $cop = $c->export();
-            if ($cop['user_id']) {
-                $cop['return_date'] = time(); //tmp
-            
-                $cop['return_date'] = date('Y-m-d', $cop['return_date']);
-                $cop['borrowed_by'] = $c->user->name." (".$c->user->class.")";
-                $cop['nid'] = $c->user->id;
-            } else {
-                $cop['borrowed_by'] = '';
-                $cop['return_date'] = '';
-                $cop['nid'] = '';
-            }
-            if (!$cop['collection']) $cop['collection'] = 'Kurslitteratur';
-            
-            $cop['bc_print'] = 'No';
-            if (\R::related($c, 'barcode')) { 
-                $cop['bc_print'] = 'Yes';
-            }
-            $copies[] = $cop;
-        }
-        return $copies;
-    }
-    
     static function getIDs() {
         $rows = \R::getAll('SELECT id FROM title ORDER BY author, title');
 		return array_map(function($a) { return $a['id']; }, $rows);
@@ -87,6 +61,7 @@ class Title extends \models\DBModel {
     
     function getData() {
         $data = array();
+        return $this->data->export(false, false, true);
         if ($this->data) {
             foreach($this->data->export() as $key=>$val) {
                 if (is_string($val)) {
@@ -110,6 +85,8 @@ class Title extends \models\DBModel {
                 'class'=>'', 'placeholder'=>'', 'name'=>'ISBN'),
             'date'=>array(
                 'class'=>'', 'placeholder'=>'', 'name'=>'{Year}'),
+            'code'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Subject}'),    
             'total'=>array(
                 'class'=>'', 'placeholder'=>'', 'name'=>'{Total}'),
             'borrowed'=>array(
@@ -126,11 +103,12 @@ class Title extends \models\DBModel {
         }
     }
     
-    function addCopies($n, $coll) {
+    function addCopies($n, $c_id) {
         $title = &$this->data;
         $copies = \R::dispense('copy', $n);
 		$barcodes = \R::dispense('barcode', $n);
-
+        $coll = \R::load('collectoin', $c_id);
+        
 		if (!is_array($copies)) {
 			$copies = array($copies);
 			$barcodes = array($barcodes);

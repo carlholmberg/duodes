@@ -15,7 +15,7 @@ return array(
 	'Copies' => 'Kopior',
 	'Language' => 'Språk',
 	'Description' => 'Beskrivning',
-	'Code' => 'SAB',
+	'Code' => 'Ämne',
 	'Keywords' => 'Nyckelord',
 	'No title' => 'Ingen titel',
 	'No access' => 'Ingen behörighet',
@@ -112,6 +112,7 @@ return array(
 	'Circulation' => 'Cirkulation',
 	'History' => 'Historik',
 	'Collection' => 'Samling',
+	'Registered' => 'Registrerad',
 		
 	'Log out' => 'Logga ut',
 	'Log in' => 'Logga in',

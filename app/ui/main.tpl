@@ -112,6 +112,10 @@ $(document).ready(function() {
         });
 
     });
+    
+    $.get("ajax/collections-opt", function(html) {
+        $("#collection").append(html);
+    });
 
 });
         
@@ -170,6 +174,14 @@ $(document).ready(function() {
         <!-- /cut:menu -->
         <!-- paste:menu -->
         
+        <!-- cut:msg -->
+        <div class="container alert alert-#type# fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <p>#msg#</p>
+        </div>
+        <!-- /cut:msg -->
+        <!-- paste:msg -->
+            
         <!-- paste:page -->
     
         <!-- cut:footer -->
@@ -183,7 +195,7 @@ $(document).ready(function() {
                                 <li><a href="#">Kontakta Talgdank</a></li>-->
                             </ul>
                         </div>
-                        <div class="col-md-4"><img src="img/duodes.png" alt="branding" width="300" />
+                        <div class="col-md-4"><img src="img/duodes.png" class="pull-right" alt="branding" width="240" />
                     </div>
                 </div>
             </div>

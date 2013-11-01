@@ -26,9 +26,9 @@ class User extends \models\DBModel {
     
     function __construct($type, $val, $create=false) {
         if ($create) {
-            parent::load('user');
+            $this->load('user');
         } else if ($type == 'id') {
-            parent::load('user', $val);
+            $this->load('user', intval($val));
         } else {
             $this->data = \R::findOne('user', ' '.$type.' = :val', 
                 array(':val' => $val)
@@ -48,9 +48,9 @@ class User extends \models\DBModel {
         $this->save();
     }
     
-    
     function getData() {
         $data = array();
+        return $this->data->export(false, false, true);
         if ($this->data) {
             foreach($this->data->export() as $key=>$val) {
                 if (is_string($val)) {
@@ -90,21 +90,23 @@ class User extends \models\DBModel {
             'class'=>array(
                 'class'=>'group-letter-3', 'placeholder'=>'', 'name'=>'{Class}'),
             'lastname'=>array(
-                'class'=>'', 'placeholder'=>'', 'name'=>'{Lastname}', 'href' => 'user'),
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Lastname}', 'href' => 'user', 
+                'uid' => true),
             'firstname'=>array(
-                'class'=>'', 'placeholder'=>'', 'name'=>'{Firstname}', 'href' => 'user'),
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Firstname}', 'href' => 'user', 
+                'uid' => true),
             'level'=>array(
                 'class'=>'', 'placeholder'=>'', 'name'=>'{Level}'),
             'status'=>array(
                 'class'=>'', 'placeholder'=>'', 'name'=>'{Status}'),
             'books'=>array(
                 'class'=>'', 'placeholder'=>'', 'name'=>'{Borrowed books}'),
-            'bc_add'=>array(
-                'class'=>'', 'placeholder'=>'', 'name'=>'{Barcode}'));
+            'bc_print'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Print barcode}'));
         
         if ($lvl < 3) {
             unset($header['level']);
-            unset($header['bc_add']);
+            unset($header['bc_print']);
         }
         return $header;
     }
@@ -117,7 +119,7 @@ class User extends \models\DBModel {
         foreach($ids as $id) {
             $t = \R::load('user', $id);
             $user = $t->export();
-            $user['bc_add'] = false; // TMP
+            $user['bc_print'] = \R::relatedOne($t, 'barcode')? 1 : 0;
             $user['books'] = count($t->ownCopy);
             $users[] = $user;
         }
@@ -126,17 +128,5 @@ class User extends \models\DBModel {
     }
     
     
-    function getCopies() {
-        $copies = array();
-        foreach($this->data->ownCopy as $c) {
-            $cop = $c->export();
-            $cop['return_date'] = time(); //tmp
-            $cop['return_date'] = date('Y-m-d', $cop['return_date']);
-            $cop['title'] = $c->title->title;
-            $cop['nid'] = $c->title->id;
-            if (!$cop['collection']) $cop['collection'] = 'Kurslitteratur';
-            $copies[] = $cop;
-        }
-        return $copies;
-    }
+    
 }

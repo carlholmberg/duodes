@@ -27,6 +27,7 @@ class DBModel
             return false;
         }
         $this->type = $type;
+
         if ($id == false) {
             $this->data = \R::dispense($type);
             $this->exists = true;
@@ -34,7 +35,6 @@ class DBModel
             $this->data = \R::load($type, $id);
             $this->exists = (!$this->data->id)? false : true;
         }
-        return $this->data;
     }
     
     
