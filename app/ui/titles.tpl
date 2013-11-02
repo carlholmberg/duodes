@@ -29,5 +29,3 @@
 <script type="text/javascript">
     displayTitles(#ids#);
 </script>
-
-</script>

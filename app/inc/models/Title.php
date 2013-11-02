@@ -107,7 +107,7 @@ class Title extends \models\DBModel {
         $title = &$this->data;
         $copies = \R::dispense('copy', $n);
 		$barcodes = \R::dispense('barcode', $n);
-        $coll = \R::load('collectoin', $c_id);
+        $coll = \R::load('collection', $c_id);
         
 		if (!is_array($copies)) {
 			$copies = array($copies);

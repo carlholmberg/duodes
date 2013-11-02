@@ -87,6 +87,27 @@ class User extends \controllers\ViewController {
                 $this->slots = array_merge($this->slots, $data);
                 $this->setPage('user-create');
                 break;
+                
+            case 'new':
+                $this->menu = true;
+                $this->footer = true;
+                $user = new \models\User(false, false, true);
+                $user->save();
+                $id = $user->data->id;
+                $this->slots['id'] = $id;
+                $slots = array('lastname' => '', 'firstname' => '', 'email' => '', 'class' => '', 'level' => "1", 'status' => "0");
+                $this->addSlots($slots);
+                
+                $this->newBarcode($user->data);
+                    
+                $this->slots['pagetitle'] = 'Ny användare';
+                $this->setPage('user');
+                if ($this->hasLevel(4)) {
+                    $this->addPiece('main', 'xeditable', 'extrahead');
+                    $this->addPiece('page', 'editing', 'editing');
+                }
+                
+                break;
             
             case 'all':
                 $this->menu = true;
@@ -220,6 +241,10 @@ class User extends \controllers\ViewController {
         
         $user = new \models\User('id', $params['id']);
         $data = serialize($user->data->export());
+        
+		$barcode = \R::relatedOne($user->data, 'barcode');
+		if ($barcode) \R::trash($barcode);
+			        
         new \controllers\Log('delete', 'Deleted user "'. $user->data->email.'"', $data);
 
         $user->delete();

@@ -9,6 +9,8 @@
  *   
  */
 namespace controllers;
+require_once('app/lib/rb.php');
+\R::setup('sqlite:data/db.db');
 
 class Main extends \controllers\ViewController {
     
@@ -32,6 +34,48 @@ class Main extends \controllers\ViewController {
     function noaccess($app, $params) {
         $this->slots['pagetitle'] = '{No access}';
         $this->setPage('noaccess');
+    }
+    
+    function search($app, $params) {
+        $this->menu = true;
+        $this->footer = true;
+        $this->slots['pagetitle'] = '{Search}';
+        
+        if ($this->hasLevel(3)) {
+            $this->setPage('search-both');
+        } else {
+            $this->setPage('search');
+        }
+            
+        $terms = explode(' ', $app->get('GET.search'));
+        $results = array();
+        foreach ($terms as $term) {
+            $term = '%'.$term.'%';
+            $titles = \R::findAll('title', ' title LIKE :term OR author LIKE :term OR keywords LIKE :term COLLATE NOCASE ', array(':term' => $term));
+            $results = array_merge($results, $titles);
+        }
+        if (count($results) == 0) {
+            $this->addPiece('page', 'noresult', 'resultTitle', array('what' => '{titles}'));
+        }
+        foreach ($results as $result) {
+            $this->addPiece('page', 'resultTitle', 'resultTitle', array('id' => $result->id, 'title' => $result->title, 'author' => $result->author, 'date' => $result->date));
+        }
+        if ($this->hasLevel(3)) {
+            $results = array();
+            foreach ($terms as $term) {
+                $term = '%'.$term.'%';
+                $users = \R::findAll('user', ' firstname LIKE :term OR lastname LIKE :term COLLATE NOCASE ', array(':term' => $term));
+                $results = array_merge($results, $users);
+            }
+            if (count($results) == 0) {
+                $this->addPiece('page', 'noresult', 'resultUser', array('what' => '{users}'));
+            }
+            foreach ($results as $result) {
+                $this->addPiece('page', 'resultUser', 'resultUser', array('id' => $result->id, 'lastname' => $result->lastname, 'firstname' => $result->firstname, 'class' => $result->class));
+            }
+        }
+                    
+        
     }
     
     function e404() {

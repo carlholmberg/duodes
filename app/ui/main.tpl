@@ -143,9 +143,9 @@ $(document).ready(function() {
 
                 <div class="collapse navbar-collapse">
                     
-                    <form class="navbar-form navbar-right" role="search">
+                    <form class="navbar-form navbar-right" role="search" action="search" method="get" >
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
+                            <input type="text"  name="search" id="search"  class="form-control" placeholder="Search">
                         </div>
                         <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
                     </form>
