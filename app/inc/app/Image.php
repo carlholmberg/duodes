@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
-class Image extends \controllers\Controller {
+class Image extends \app\Controller {
     function get($app, $params) {
         if (isset($params['id'])) {
             $file = $params['id'];

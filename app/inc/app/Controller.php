@@ -8,7 +8,7 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 require_once('app/lib/rb.php');
 \R::setup('sqlite:data/db.db');
 
@@ -76,7 +76,7 @@ class Controller
         if ($this->json !== false) {
             // skicka ut jsondata
             echo json_encode($this->data);
-            //echo preg_replace_callback('|\{.+?\}|', '\controllers\__', $this->tpl);
+            //echo preg_replace_callback('|\{.+?\}|', '\app\__', $this->tpl);
 
         }
     }

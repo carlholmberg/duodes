@@ -8,9 +8,22 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+/* Model: User
+    id [auto]
+    email [str]
+    firstname [str]
+    lastname [str]
+    class [str]
+    uid [str]
+    level [0-4] ([(guest), circ, student, teacher, admin])
+    salt [salt()]
+    password [hash(str, salt)]
+    status [1: active, 0: inactive]
+*/
+    
+namespace app;
 
-class User extends \controllers\ViewController {
+class User extends \app\ViewController {
     
     static function salt() {
         return substr(str_shuffle(MD5(microtime())), 0, 5);
@@ -118,7 +131,7 @@ class User extends \controllers\ViewController {
                 $this->slots['ids'] = count($ids);
                 $this->setPage('users');
 
-                $header = \models\User::getHeader($this->lvl);
+                $header = self::getHeader($this->lvl);
                 $users = self::getUsers(0, 40);
         
                 $this->buildTable($header, $users);
@@ -153,7 +166,7 @@ class User extends \controllers\ViewController {
                         $this->slots['pagetitle'] = $this->slots['user'];
                         $this->addPiece('main', 'tablesorter', 'extrahead');
                         if (count($copies)) {
-                            $header = \models\Copy::getHeader($this->lvl, 'user');
+                            $header = Copy::getHeader($this->lvl, 'user');
                             $this->buildTable($header, $copies);
                         }
                     }
@@ -257,16 +270,16 @@ class User extends \controllers\ViewController {
 		$barcode = \R::relatedOne($user, 'barcode');
 		if ($barcode) \R::trash($barcode);
 			        
-        new \controllers\Log('delete', 'Deleted user "'. $user->email.'"', $data);
+        new \app\Log('delete', 'Deleted user "'. $user->email.'"', $data);
 
-        $user->delete();
+        \R::trash($user);
 
         echo $app->get('BASE').'/user/all';
     }
     
     static function getIDs() {
-        $rows = \R::getAll('SELECT id FROM user ORDER BY class, lastname, firstname');
-		return array_map(function($a) { return $a['id']; }, $rows);
+        $rows = \R::getCol('SELECT id FROM user ORDER BY class, lastname, firstname');
+		return $rows;
     }
     
     static function getUsers($from=0, $to=false) {
@@ -284,4 +297,30 @@ class User extends \controllers\ViewController {
         
 		return $users;
     }
+    
+    static function getHeader($lvl) {
+        $header = array(
+            'class'=>array(
+                'class'=>'group-letter-3', 'name'=>'{Class}'),
+            'lastname'=>array(
+                'class'=>'', 'name'=>'{Lastname}', 'href' => 'user', 
+                'uid' => true),
+            'firstname'=>array(
+                'class'=>'', 'name'=>'{Firstname}', 'href' => 'user', 
+                'uid' => true),
+            'level'=>array(
+                'class'=>'', 'name'=>'{Level}'),
+            'status'=>array(
+                'class'=>'', 'name'=>'{Status}'),
+            'books'=>array(
+                'class'=>'', 'name'=>'{Borrowed books}'),
+            'bc_print'=>array(
+                'class'=>'', 'name'=>'{Print barcode}'));
+        
+        if ($lvl < 3) {
+            unset($header['level']);
+            unset($header['bc_print']);
+        }
+        return $header;
+    }    
 }

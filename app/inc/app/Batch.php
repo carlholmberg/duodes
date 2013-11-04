@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
-class Batch extends \controllers\ViewController {
+class Batch extends \app\ViewController {
     
     function get($app, $params) { 
         $this->menu = true;

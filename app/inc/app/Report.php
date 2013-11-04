@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
-class Report extends \controllers\Controller {
+class Report extends \app\Controller {
 
     function get($f3, $params) {
         if (isset($params['name'])) {

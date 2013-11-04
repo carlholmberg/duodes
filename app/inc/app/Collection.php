@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
-class Collection extends \controllers\Controller {
+class Collection extends \app\Controller {
     
     static function getCollections() {
         $colls = \R::findAll('collection');
@@ -29,6 +29,7 @@ class Collection extends \controllers\Controller {
     function get($app, $params) {
         echo 'Copy (GET): name '.$params['id'];
     }
+    
     function post($app, $params) {
         
     }

@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
-class Query extends \controllers\Controller {
+class Query extends \app\Controller {
     static function Libris($isbn) {
 		try {
 		    $query = "http://libris.kb.se/xsearch?query=isbn:(".$isbn.")&format_level=full&format=json";

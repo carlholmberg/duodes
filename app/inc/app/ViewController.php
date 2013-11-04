@@ -8,12 +8,12 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
 // Include Stamp template system
 require_once('app/lib/StampTE.php');
 
-class ViewController extends \controllers\Controller
+class ViewController extends \app\Controller
 {
     public $tpl;
     public $type;
@@ -39,8 +39,7 @@ class ViewController extends \controllers\Controller
             $this->slots['user'] = $acc['firstname'].' '.$acc['lastname'];
         } else {
             $this->slots['user'] = '';
-        }
-        
+        }   
     }
     
     function loadTpl($tpl) {
@@ -76,45 +75,27 @@ class ViewController extends \controllers\Controller
                     } else {
                         $row->glue('cell', $row->get('cell')->injectAll(array('id'=>$id, 'cell'=>$item[$cell])));
                     }
-                } else if ($cell == 'borrowed_by') {
-                    $row->glue('cell', $row->get('scell')->injectAll(
-                        array('href' => 'copy',
-                              'field' => $cell,
-                              'id' => $id,
-                              'value' => $item[$cell],
-                              'source' => 'ajax/users',
-                              'name' => $header[$cell]['name'])));   
-                } else if ($cell == 'collection') {
-                      
-                    $row->glue('cell', $row->get('scell')->injectAll(
-                        array('href' => 'copy',
-                              'field' => $cell,
-                              'id' => $id,
-                              'value' => $item['collection_id'],
-                              'source' => 'ajax/collections',
-                              'name' => $header[$cell]['name'])));           
-                } else if ($cell == 'bc_print') {
-                      
-                    $row->glue('cell', $row->get('scell')->injectAll(
-                        array('href' => 'copy',
-                              'field' => $cell,
-                              'id' => $id,
-                              'value' => $item[$cell],
-                              'source' => '{1: "Ja", 0: "Nej"}',
-                              'name' => $header[$cell]['name'])));           
                 } else {
-                  
-                    $row->glue('cell', $row->get('ecell')->injectAll(
-                        array('href' => 'copy',
-                              'field' => $cell,
-                              'id' => $id,
-                              'value' => $item[$cell],
-                              'name' => $header[$cell]['name']))); 
-                
-                }
-            
-            
+                    $type = 'scell';
+                    $data = array('href' => 'copy',
+                                  'field' => $cell,
+                                  'id' => $id,
+                                  'value' => $item[$cell],
+                                  'name' => $header[$cell]['name']);
+                    
+                    if ($cell == 'borrowed_by') {
+                        $data['source'] = 'ajax/users';
+                    } else if ($cell == 'collection') {
+                        $data['source'] = 'ajax/collections';
+                        $data['value'] = $item['collection_id'];
+                    } else if ($cell == 'bc_print') {
+                        $data['source'] = '{1: "Ja", 0: "Nej"}';
+                    } else {
+                        $type = 'ecell';
+                    }
 
+                    $row->glue('cell', $row->get($type)->injectAll($data));
+                }
             }
             $tpl->glue('row', $row);
         }
@@ -280,7 +261,7 @@ class ViewController extends \controllers\Controller
             }
 
             $this->tpl->injectAll($this->slots);
-            echo preg_replace_callback('|\{.+?\}|', '\controllers\__', $this->tpl);
+            echo preg_replace_callback('|\{.+?\}|', '\app\__', $this->tpl);
         }
     }
 }

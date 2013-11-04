@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
-class Main extends \controllers\ViewController {
+class Main extends \app\ViewController {
     
     function minify($app, $params) {
         $app->set('UI', $params['type'] . '/');
@@ -102,7 +102,7 @@ class Main extends \controllers\ViewController {
     function titles_ajax($app, $params) {
         $from = (int)$params['from'];
         $to = (int)$params['to'];
-        $header = \models\Title::getHeader($this->lvl);
+        $header = Title::getHeader($this->lvl);
         $titles = Title::getTitles($from, $to);
         
         $tpl = $this->buildTable($header, $titles, true);
@@ -114,7 +114,7 @@ class Main extends \controllers\ViewController {
     function users_ajax($app, $params) {
         $from = (int)$params['from'];
         $to = (int)$params['to'];
-        $header = \models\User::getHeader($this->lvl);
+        $header = User::getHeader($this->lvl);
         $users = User::getUsers($from, $to);
         
         $tpl = $this->buildTable($header, $users, true);

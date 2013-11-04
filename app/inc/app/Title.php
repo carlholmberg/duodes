@@ -25,9 +25,9 @@
     borrowed [int]
 */
 
-namespace controllers;
+namespace app;
 
-class Title extends \controllers\ViewController {
+class Title extends \app\ViewController {
 
     function get($app, $params) {
         $id = $params['id'];
@@ -44,12 +44,12 @@ class Title extends \controllers\ViewController {
                 $this->menu = true;
                 $this->footer = true;
                 $this->addPiece('main', 'tablesorter', 'extrahead');
-                $ids = self::getIDs();
+                $rows = \R::getCell('SELECT COUNT(*) FROM title');
                 $this->slots['pagetitle'] = '{Titles}';
-                $this->slots['ids'] = count($ids);
+                $this->slots['ids'] = $rows;
                 $this->setPage('titles');
 
-                $header = \models\Title::getHeader($this->lvl);
+                $header = self::getHeader($this->lvl);
                 $titles = Title::getTitles(0, 40);
         
                 $this->buildTable($header, $titles);
@@ -84,7 +84,7 @@ class Title extends \controllers\ViewController {
                         }     
                         $this->addPiece('main', 'tablesorter', 'extrahead');
                         if (count($copies)) {
-                            $header = \models\Copy::getHeader($this->lvl);
+                            $header = Copy::getHeader($this->lvl);
                             if($this->hasLevel(4)) $this->buildCopyTable($header, $copies);
                             else $this->buildTable($header, $copies);
                         }
@@ -198,13 +198,12 @@ class Title extends \controllers\ViewController {
                 $app = \Base::instance();
                 $app->reroute('/title/all');
             }
-            $rows = \R::getAll('SELECT DISTINCT title_id AS id FROM copy WHERE collection_id = ?', array($_GET['collection']));
+            $rows = \R::getCol('SELECT DISTINCT title_id FROM copy WHERE collection_id = ?', array($_GET['collection']));
 		} else {    
-            $rows = \R::getAll('SELECT id FROM title ORDER BY author, title');
+            $rows = \R::getCol('SELECT id FROM title ORDER BY author, title');
 		}
-		return array_map(function($a) { return $a['id']; }, $rows);
+		return $rows;
     }
-    
     
     static function updateBorrowed($title) {
 	    $borrowed = 0;
@@ -237,12 +236,34 @@ class Title extends \controllers\ViewController {
         $title = \R::load('title', $params['id']);
         if ($title) {
             $data = serialize($title->export());
-            new \controllers\Log('delete', 'Deleted title "'. $title->title.'"', $data);
+            new \app\Log('delete', 'Deleted title "'. $title->title.'"', $data);
             \R::trashAll($title->ownCopy);
             \R::trash($title);
         }
 
         echo $app->get('BASE').'/title/all';
+    }
+    
+    static function getHeader($lvl) {
+        $header = array(
+            'title'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Title}', 'href'=>'title'),
+            'author'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Author}'),
+            'isbn'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'ISBN'),
+            'date'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Year}'),
+            'code'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Subject}'),    
+            'total'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Total}'),
+            'borrowed'=>array(
+                'class'=>'', 'placeholder'=>'', 'name'=>'{Borrowed}'));
+        if ($lvl < 2) {
+            unset($header['borrowed']);
+        }
+        return $header;
     }
     
 }

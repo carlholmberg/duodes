@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
-class Label extends \controllers\Controller {
+class Label extends \app\Controller {
     function get($f3, $params) {
         echo '('.$params['collection'].') Item (GET): type '.$params['type'].' id '.$params['id'];
         if ($params['type'] == 'user') {

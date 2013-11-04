@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
-class Log extends \controllers\Controller {
+class Log extends \app\Controller {
     function __construct($action, $message="", $data="") {
         parent::__construct();
         

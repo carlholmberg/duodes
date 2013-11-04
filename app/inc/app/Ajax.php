@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
-class Ajax extends \controllers\Controller {
+class Ajax extends \app\Controller {
     function get($app, $params) {
         switch ($params['what']) {
         

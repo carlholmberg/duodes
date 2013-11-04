@@ -70,7 +70,7 @@ $app->set('TZ', 'Europe/Stockholm');
 
 /*$app->set('ONERROR', function() {
     if ($app->get('AJAX')) return;
-    $m = new \controllers\Main;
+    $m = new \app\Main;
     $m->e404();
 });*/
 
@@ -78,31 +78,31 @@ $app->set('LOC','app/lang/');
 $app->set('LANG', 'sv_SE');
 $app->set('menu', $menu);
 
-$app->route('GET /', '\controllers\Main->index');
-//$app->route('GET /minify/@type', '\controllers\Main->minify', 3600);
-$app->route('GET /@page', '\controllers\Main->@page');
-$app->route('GET /report', '\controllers\Report');
-//$app->route('GET /batch', '\controllers\Batch');
+$app->route('GET /', '\app\Main->index');
+//$app->route('GET /minify/@type', '\app\Main->minify', 3600);
+$app->route('GET /@page', '\app\Main->@page');
+$app->route('GET /report', '\app\Report');
+//$app->route('GET /batch', '\app\Batch');
 
-$app->route('GET|POST /login/@type', '\controllers\Login->@type');
-$app->route('GET /logout', '\controllers\Login->logout');
+$app->route('GET|POST /login/@type', '\app\Login->@type');
+$app->route('GET /logout', '\app\Login->logout');
 
-$app->route('GET /titles/@from/@to', '\controllers\Main->titles_ajax');
-$app->route('GET /users/@from/@to', '\controllers\Main->users_ajax');
+$app->route('GET /titles/@from/@to', '\app\Main->titles_ajax');
+$app->route('GET /users/@from/@to', '\app\Main->users_ajax');
 
 // REST-API
-$app->map('/title/@id', '\controllers\Title');
-$app->map('/title/@id/@action', '\controllers\Title');
-$app->map('/user/@id', '\controllers\User');
-$app->map('/copy/@id', '\controllers\Copy');
-$app->map('/label/@type/@id','\controllers\Label');
-$app->map('/label/@type/@group/@id','\controllers\Label');
-$app->map('/report/@name', '\controllers\Report');
-$app->map('/batch/@id', '\controllers\Batch');
-$app->map('/image/@id', '\controllers\Image');
-$app->map('/image', '\controllers\Image');
+$app->map('/title/@id', '\app\Title');
+$app->map('/title/@id/@action', '\app\Title');
+$app->map('/user/@id', '\app\User');
+$app->map('/copy/@id', '\app\Copy');
+$app->map('/label/@type/@id','\app\Label');
+$app->map('/label/@type/@group/@id','\app\Label');
+$app->map('/report/@name', '\app\Report');
+$app->map('/batch/@id', '\app\Batch');
+$app->map('/image/@id', '\app\Image');
+$app->map('/image', '\app\Image');
 
-$app->map('/ajax/@what', '\controllers\Ajax');
-$app->map('/circ', '\controllers\Circ');
+$app->map('/ajax/@what', '\app\Ajax');
+$app->map('/circ', '\app\Circ');
 
 $app->run();

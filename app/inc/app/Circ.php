@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
-class Circ extends \controllers\ViewController {
+class Circ extends \app\ViewController {
 
 
     function get($app, $params) {

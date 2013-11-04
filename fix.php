@@ -5,7 +5,7 @@ date_default_timezone_set('Stockholm/Europe');
 include('app/lib/rb.php');
 R::setup('sqlite:data/db.db');
 
-$step = $_GET['do'];
+$step = isset($_GET['do'])? $_GET['do'] : 'first';
 
 switch($step) {
 
@@ -76,8 +76,7 @@ switch($step) {
         break;
     
     case 'titles':
-        $rows = \R::getAll('SELECT id FROM title');
-        $ids = array_map(function($a) { return $a['id']; }, $rows);
+        $ids = \R::getCol('SELECT id FROM title');
         foreach ($ids as $id) {
             $title = R::load('title', $id);
             $meta = R::load('titlemeta', $title->titlemeta_id);

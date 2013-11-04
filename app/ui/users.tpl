@@ -8,7 +8,7 @@
 	<thead>
 		<tr>
 		    <!-- cut:hcell -->
-			<th class="#class#" data-placeholder="#placeholder#">#name#</th>
+			<th class="#class#">#name#</th>
 			<!-- /cut:hcell -->
 			<!-- paste:hcell -->
 	</thead>

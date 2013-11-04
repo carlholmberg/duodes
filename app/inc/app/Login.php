@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */
-namespace controllers;
+namespace app;
 
-class Login extends \controllers\Controller {
+class Login extends \app\Controller {
 
     function google($app, $params) {
         if ($app->get('GET.openid_mode') == 'cancel') {
@@ -24,7 +24,7 @@ class Login extends \controllers\Controller {
                               'lastname' => $response['ext1.value.lastname'],
                               'email' => $response['ext1.value.email']);
                 
-                $user = new \controllers\User;
+                $user = new \app\User;
                 $ok = $user->fromGoogle($data);
                 
                 if ($ok) {
@@ -60,7 +60,7 @@ class Login extends \controllers\Controller {
         $data = array('email' => $email,
                       'password' => $password);
         
-        $user = new \controllers\User;
+        $user = new \app\User;
         $ok = $user->fromLocal($data);
         if ($ok) {
             $app->set('SESSION.user', $ok);

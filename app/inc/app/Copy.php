@@ -7,10 +7,19 @@
  * @copyright Copyright 2012
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
- */
-namespace controllers;
+ */ 
+/* Model: Title
+    id [auto]
+    title [Model.Title]
+    user [Model.User]
+    return_date [date]
+    collection [Model.Collection]
+    barcode [str]
+*/
 
-class Copy extends \controllers\Controller {
+namespace app;
+
+class Copy extends \app\Controller {
     function get($app, $params) {
         echo 'Copy (GET): name '.$params['id'];
     }
@@ -93,4 +102,40 @@ class Copy extends \controllers\Controller {
     
     function put() {}
     function delete() {}
+    
+    static function getHeader($lvl, $for='title') {
+        if ($for == 'title') {
+            $header = array(
+                'collection' => array(
+                    'class' => 'group-word filter-false', 'name' => '{Collection}'),
+                'barcode' => array(
+                    'class' => '', 'name' => '{Barcode}'),
+                'borrowed_by' => array(
+                    'class' => '', 'name' => '{Borrowed}', 'href' => 'user', 'uid' => true),
+                'return_date' => array(
+                    'class' => '', 'name' => '{Return date}'),
+                'bc_print' => array(
+                    'class' => '', 'name' => '{Print barcode}')
+            );
+       
+            if ($lvl < 2) {
+                unset($header['borrowed_by']);
+                unset($header['bc_print']);
+            }
+        } else if ($for == 'user') {
+            $header = array(
+                'collection' => array(
+                    'class' => 'group-word filter-false', 'name' => '{Collection}'),
+                'title' => array(
+                    'class' => '', 'name' => '{Title}', 'href' => 'title', 'tid' => true),
+                'barcode' => array(
+                    'class' => '', 'name' => '{Barcode}'),
+                
+                'return_date' => array(
+                    'class' => '', 'name' => '{Return date}'),
+            );
+        }
+        return $header;
+    }
+    
 }
