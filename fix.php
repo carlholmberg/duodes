@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Stockholm/Europe');
+
 include('app/lib/rb.php');
 R::setup('sqlite:data/db.db');
 
@@ -8,8 +10,12 @@ $step = $_GET['do'];
 switch($step) {
 
     case 'coll':
+        $val = array(
+            array('name' => 'år', 'ts' => strtotime("10 June 2014")),
+            array('name' => 'ht', 'ts' => strtotime("10 January 2014")));
+        
         $colls = array(
-            'Kurslitteratur' => array('type' => 'fixed', 'value' => ''),
+            'Kurslitteratur' => array('type' => 'fixed', 'value' => serialize($val)),
             'Bibliotek' => array('type' => 'days', 'value' => 14),
             'WS-litteratur' => array('type' => 'ref', 'value' => 0)
         );
@@ -46,9 +52,9 @@ switch($step) {
     case 'copies':
         $coll = array('course' => 'Kurslitteratur', 'library' => 'Bibliotek');
 
-        $kurs = \R::findOne('collection', ' name = ? ', array('kurslitteratur'));
-        $bibl = \R::findOne('collection', ' name = ? ', array('bibliotek'));
-        
+        $kurs = R::findOne('collection', ' name = ? ', array('Kurslitteratur'));
+        $bibl = R::findOne('collection', ' name = ? ', array('Bibliotek'));
+        R::begin();
         foreach($coll as $c=>$n) {
             $titles = R::findAll('title', ' type = :val', array(':val' => $c));
                 foreach ($titles as $title) {
@@ -64,6 +70,7 @@ switch($step) {
                 }
             }
         }
+        R::commit();
         echo 'Copies complete';
         echo '<a href="fix.php?do=titles">Step 4</a>';
         break;

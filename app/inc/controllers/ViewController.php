@@ -51,6 +51,12 @@ class ViewController extends \controllers\Controller
         return false;
     }
     
+    function addMessage($tpl, $data) {
+    
+    
+    }
+    
+    
     function buildCopyTable($header, $data) {
     
         foreach ($header as $key=>$val) {
@@ -172,7 +178,7 @@ class ViewController extends \controllers\Controller
     function addSlots($arr) {
         if (is_array($arr)) {
             foreach($arr as $k => $v) {
-                if (is_string($v))
+                if (is_string($v) || is_numeric($v))
                     $this->slots[$k] = $v;
             }
         }

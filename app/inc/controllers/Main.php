@@ -9,8 +9,6 @@
  *   
  */
 namespace controllers;
-require_once('app/lib/rb.php');
-\R::setup('sqlite:data/db.db');
 
 class Main extends \controllers\ViewController {
     
@@ -37,6 +35,19 @@ class Main extends \controllers\ViewController {
     }
     
     function search($app, $params) {
+        $terms = $app->get('GET.search');
+        if ($this->hasLevel(3)) {
+            $user = \R::findOne('user', ' barcode = ? ', array($terms));
+            if ($user) {
+                $app->reroute('/user/'.$user->id);
+            }
+        }
+        
+        $copy = \R::findOne('copy', ' barcode = ? ', array($terms));
+        if ($copy) {
+            $app->reroute('/title/'.$copy->title->id);
+        }
+        
         $this->menu = true;
         $this->footer = true;
         $this->slots['pagetitle'] = '{Search}';
@@ -46,12 +57,13 @@ class Main extends \controllers\ViewController {
         } else {
             $this->setPage('search');
         }
-            
-        $terms = explode(' ', $app->get('GET.search'));
+        $terms = $app->get('GET.search');
+        if (substr($terms, 0, 1) == '"') $terms = array(str_replace('"', '', $terms));
+        else $terms = explode(' ', $terms);
+
         $results = array();
         foreach ($terms as $term) {
-            $term = '%'.$term.'%';
-            $titles = \R::findAll('title', ' title LIKE :term OR author LIKE :term OR keywords LIKE :term COLLATE NOCASE ', array(':term' => $term));
+            $titles = \R::findAll('title', ' title LIKE :term OR author LIKE :term OR keywords LIKE :term COLLATE NOCASE ', array(':term' => '%'.$term.'%'));
             $results = array_merge($results, $titles);
         }
         if (count($results) == 0) {
@@ -85,17 +97,13 @@ class Main extends \controllers\ViewController {
     function label($app, $params) {
         echo 'Label-page';
     }
-    
-    function copy($app, $params) {
-        echo 'Copy-page';
-    }
 
 
     function titles_ajax($app, $params) {
         $from = (int)$params['from'];
         $to = (int)$params['to'];
         $header = \models\Title::getHeader($this->lvl);
-        $titles = \models\Title::getTitles($from, $to);
+        $titles = Title::getTitles($from, $to);
         
         $tpl = $this->buildTable($header, $titles, true);
         

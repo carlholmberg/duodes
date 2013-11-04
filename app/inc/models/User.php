@@ -44,7 +44,7 @@ class User extends \models\DBModel {
     
     function borrow($copy) {
         $this->data->ownCopy[] = $copy->data;
-        \models\Title::updateBorrowed($copy->data->title);
+        Title::updateBorrowed($copy->data->title);
         $this->save();
     }
     
@@ -67,11 +67,6 @@ class User extends \models\DBModel {
     
     function createUser() {
         
-    }
-    
-    static function getIDs() {
-        $rows = \R::getAll('SELECT id FROM user ORDER BY class, lastname, firstname');
-		return array_map(function($a) { return $a['id']; }, $rows);
     }
     
     function info() {
@@ -109,24 +104,7 @@ class User extends \models\DBModel {
             unset($header['bc_print']);
         }
         return $header;
-    }
-    
-    static function getUsers($from=0, $to=false) {
-        $ids = self::getIDs();
-        $users = array();
-        $length = ($to !== false)? $to-$from : NULL;
-        $ids = array_slice($ids, $from, $length);
-        foreach($ids as $id) {
-            $t = \R::load('user', $id);
-            $user = $t->export();
-            $user['bc_print'] = \R::relatedOne($t, 'barcode')? 1 : 0;
-            $user['books'] = count($t->ownCopy);
-            $users[] = $user;
-        }
-        
-		return $users;
-    }
-    
+    }    
     
     
 }

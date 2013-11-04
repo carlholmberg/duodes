@@ -30,10 +30,10 @@ $menu = array(
               'title' => '{New user}',
               'icon' => 'edit',
               'level' => 3),
-        array('link' => 'user/import',
+/*        array('link' => 'user/import',
               'title' => '{Import users}',
               'icon' => 'import',
-              'level' => 3),
+              'level' => 3),*/
         array('link' => 'user/all',
             'title' => '{Show users}',
             'icon'=> 'tasks',
@@ -82,7 +82,7 @@ $app->route('GET /', '\controllers\Main->index');
 //$app->route('GET /minify/@type', '\controllers\Main->minify', 3600);
 $app->route('GET /@page', '\controllers\Main->@page');
 $app->route('GET /report', '\controllers\Report');
-$app->route('GET /batch', '\controllers\Batch');
+//$app->route('GET /batch', '\controllers\Batch');
 
 $app->route('GET|POST /login/@type', '\controllers\Login->@type');
 $app->route('GET /logout', '\controllers\Login->logout');
@@ -100,6 +100,8 @@ $app->map('/label/@type/@group/@id','\controllers\Label');
 $app->map('/report/@name', '\controllers\Report');
 $app->map('/batch/@id', '\controllers\Batch');
 $app->map('/image/@id', '\controllers\Image');
+$app->map('/image', '\controllers\Image');
+
 $app->map('/ajax/@what', '\controllers\Ajax');
 $app->map('/circ', '\controllers\Circ');
 

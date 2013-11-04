@@ -9,8 +9,6 @@
  *   
  */
 namespace controllers;
-require_once('app/lib/rb.php');
-\R::setup('sqlite:data/db.db');
 
 class Copy extends \controllers\Controller {
     function get($app, $params) {
@@ -28,7 +26,7 @@ class Copy extends \controllers\Controller {
                 $user = \R::load('user', $value);
                 
                 $user->ownCopy[] = $copy;
-                \models\Title::updateBorrowed($copy->title);
+                Title::updateBorrowed($copy->title);
                 \R::store($user);
                 break;
             

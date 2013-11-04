@@ -112,10 +112,6 @@ $(document).ready(function() {
         });
 
     });
-    
-    $.get("ajax/collections-opt", function(html) {
-        $("#collection").append(html);
-    });
 
 });
         

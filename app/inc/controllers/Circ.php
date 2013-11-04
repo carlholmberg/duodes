@@ -36,12 +36,28 @@ class Circ extends \controllers\ViewController {
             $this->app->set('SESSION.circ', 'borrow');
             $this->app->reroute('/circ');
         }
-        
+        if ($copy->data->collection) {
+            if ($copy->data->collection->type == 'days') {
+                $copy->data->return_date = strtotime('+ '.$copy->data->collection->value.' days');
+            } else if ($copy->data->collection->type == 'ref') {
+                new \controllers\Log('borrow', $user->data->email.' tried to borrowed copy "'. $copy->data->barcode.' (ref)"', serialize($data));
+                $this->app->set('SESSION.msg', 'Boken är får inte lånas');
+                $this->app->set('SESSION.circ', 'borrow');
+                $this->app->reroute('/circ');
+            } else if ($copy->data->collection->type == 'fixed') {
+                if ($this->app->get('SESSION.FixedCollDate')) {
+                    $copy->data->return_date = $this->app->get('SESSION.FixedCollTS');
+                } else {
+                    $ts = unserialize($copy->data->collection->value);
+                    $copy->data->return_date = $ts[0]['ts'];
+                }
+            }
+        }
         new \controllers\Log('borrow', $user->data->email.' borrowed copy "'. $copy->data->barcode.'"', serialize($data));
         $user->borrow($copy);
         $name = $user->data->firstname.' '.$user->data->lastname;
         $this->app->set('SESSION.msg', $name.' lånade '.$copy->data->title->title);
-        $app->set('SESSION.circ', 'borrow');
+        $this->app->set('SESSION.circ', 'borrow');
         $this->app->reroute('/circ');
     }
     
@@ -56,7 +72,9 @@ class Circ extends \controllers\ViewController {
                     $user = $copy->data->user;
                     $copy->returnCopy();
                     $name = $user->firstname.' '.$user->lastname;
-                    $this->app->set('SESSION.msg', $name.' återlämnade '.$copy->data->title->title);
+                    $collection = ($copy->data->collection)? $copy->data->collection->name : '';
+                    $msg = sprintf("%s återlämnade %s (%s). [%s]", $name, $copy->data->title->title, $copy->data->barcode, $collection);
+                    $app->set('SESSION.msg', $msg);
                     $app->set('SESSION.circ', 'return');
                     $this->app->reroute('/circ');
                 } else {

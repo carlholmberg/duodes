@@ -96,7 +96,7 @@ function initTitles() {
     theme : "bootstrap",
     widthFixed: true,
     headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
-    widgets : [ "uitheme", "filter", "zebra"],
+    widgets : [ "uitheme", "filter", "zebra", "resizable" ],
     widgetOptions : {
       zebra : ["even", "odd"],
       filter_reset : ".reset",
@@ -136,5 +136,10 @@ $(document).ready(function() {
     active     : '', // applied when column is sorted
     filterRow  : '', // filter row class
   });
+  
+  
+    $.get("ajax/collections-opt", function(html) {
+        $("#collection").append(html);
+    });
 
 });

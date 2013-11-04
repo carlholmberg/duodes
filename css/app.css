@@ -2,5 +2,26 @@
     border: 1px solid #555;
     box-shadow: 3px 3px 2px #888888;
     margin: 5px;
+    opacity: 0.9;
     width: 140px;
+}
+
+.editable {
+    border: 1px dotted #aaa;
+    padding: 3px;
+    -webkit-box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255,240,240,0.5);
+    margin: 0;
+}
+.editable:hover {
+    color: #883333;
+}
+
+#searchresults td {
+    vertical-align: top;
+}
+
+.centered {
+    text-align: center;
 }

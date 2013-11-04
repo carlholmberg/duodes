@@ -8,7 +8,7 @@
             <div class="tab-pane container well" id="return">
                 <h4>{Scan or enter the barcode for the book}</h4>
                 <div class="input-append">
-                    <input type="text" class="span2" id="barcode" name="barcode" />
+                    <input type="text" class="span2 centered" id="barcode" name="barcode" />
                     <button type="submit" class="btn btn-primary">{Return}</button>
                 </div>
             </div>
@@ -16,8 +16,8 @@
             <div class="tab-pane container well" id="borrow">
                 <h4>{Scan or enter the barcode for the book and user}</h4>
 	            <div class="input-append">
-	                <input type="text" id="bc1" class="span2" name="bc1" />
-	                <input type="text" id="bc2" class="span2" name="bc2" />
+	                <input type="text" id="bc1" class="span2 centered" name="bc1" />
+	                <input type="text" id="bc2" class="span2 centered" name="bc2" />
 	                <button type="submit" class="btn btn-primary">{Borrow}</button>
 	            </div>    
             </div>

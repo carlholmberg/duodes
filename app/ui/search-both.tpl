@@ -9,7 +9,7 @@
     <!-- /cut:noresult -->
 
 <div class="container">
-    <table>
+    <table id="searchresults">
         <tr><th>{Titles}</th><th>{Users}</th></tr>
         <tr>
             <td class="col-md-6">

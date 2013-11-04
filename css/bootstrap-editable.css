@@ -653,15 +653,3 @@ a.editable-click.editable-disabled:hover {
   margin-left: -5px;
   margin-right: -5px;
 }
-
-
-.editable {
-    border: 1px solid #aaa;
-    padding: 4px;
-    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    background-color: rgba(255,255,255,0.8);
-}
-.editable:hover {
-    color: #883333;
-}

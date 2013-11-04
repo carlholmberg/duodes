@@ -19,7 +19,7 @@ class Ajax extends \controllers\Controller {
                 break;
             
             case 'collections':
-                $collections = \controllers\Collection::getCollections();
+                $collections = Collection::getCollections();
                 $out = array();
                 foreach($collections as $coll) {
                     $out[] = sprintf("{\"%s\": \"%s\"}", $coll['id'], $coll['name']);
@@ -29,7 +29,7 @@ class Ajax extends \controllers\Controller {
                 break;
             
             case 'collections-opt':
-                $collections = \controllers\Collection::getCollections();
+                $collections = Collection::getCollections();
                 foreach($collections as $coll) {
                     printf("<option value=\"%s\">%s</option>", $coll['id'], $coll['name']);
                 }
@@ -37,7 +37,7 @@ class Ajax extends \controllers\Controller {
                 break;
                 
             case 'users':
-                $users = \models\User::getUsers();
+                $users = User::getUsers();
                 $out = array();
                 foreach($users as $user) {
                     $name = $user['lastname'].', '.$user['firstname'].' ('.$user['class'].')';

@@ -1,6 +1,18 @@
 <div class="container">
     <h1>{Titles}</h1>
-    
+    <form class="form-inline well" role="form" action="title/all" method="get">
+        <div class="form-group">
+            <label for="collection" class="control-label">Visa:</label>
+        </div>
+        <div class="form-group">
+            <select name="collection" id="collection"><option value="all">Alla</option></select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-xs btn-default">Ok</button>
+        </div>
+    </form>
+        
+     
 </div>
 
 <div class="container">

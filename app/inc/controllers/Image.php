@@ -12,12 +12,14 @@ namespace controllers;
 
 class Image extends \controllers\Controller {
     function get($app, $params) {
-        $file = $params['id'];
-        foreach(array('.png', '.jpg', '.jpeg') as $format) {
-            if (file_exists('data/img/'.$file.$format)) {
-                $img = new \Image($file.$format, false, 'data/img/');
-                $img->render();
-                return;
+        if (isset($params['id'])) {
+            $file = $params['id'];
+            foreach(array('.png', '.jpg', '.jpeg') as $format) {
+                if (file_exists('data/img/'.$file.$format)) {
+                    $img = new \Image($file.$format, false, 'data/img/');
+                    $img->render();
+                    return;
+                }
             }
         }
         $img = new \Image('missing.png', false, 'data/img/');

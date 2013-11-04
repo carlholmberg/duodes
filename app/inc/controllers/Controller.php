@@ -9,6 +9,8 @@
  *   
  */
 namespace controllers;
+require_once('app/lib/rb.php');
+\R::setup('sqlite:data/db.db');
 
 function __($str, $values=false) {
     
