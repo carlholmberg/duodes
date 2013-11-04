@@ -30,8 +30,8 @@ class User extends \models\DBModel {
         } else if ($type == 'id') {
             $this->load('user', intval($val));
         } else {
-            $this->data = \R::findOne('user', ' '.$type.' = :val', 
-                array(':val' => $val)
+            $this->data = \R::findOne('user', ' '.$type.' = ?', 
+                array($val)
             );
         }
         $this->exists = false;
@@ -39,45 +39,6 @@ class User extends \models\DBModel {
             $this->exists = true;
             $this->active = (bool)$this->data->status;
         }
-    }
-
-    
-    function borrow($copy) {
-        $this->data->ownCopy[] = $copy->data;
-        Title::updateBorrowed($copy->data->title);
-        $this->save();
-    }
-    
-    function getData() {
-        $data = array();
-        return $this->data->export(false, false, true);
-        if ($this->data) {
-            foreach($this->data->export() as $key=>$val) {
-                if (is_string($val)) {
-                    $data[$key] = $val;
-                }
-                if ($val == null) {
-                    $data[$key] = '';
-                }
-            }
-        }
-        return $data;
-    }
-    
-    
-    function createUser() {
-        
-    }
-    
-    function info() {
-        if ($this->data) {
-            return array('firstname' => $this->data->firstname,
-                         'lastname' => $this->data->lastname,
-                         'email' => $this->data->email,
-                         'level' => $this->data->level,
-                         'id' => $this->data->id);
-        }
-        return false;
     }
     
     static function getHeader($lvl) {

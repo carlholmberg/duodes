@@ -115,7 +115,7 @@ class Main extends \controllers\ViewController {
         $from = (int)$params['from'];
         $to = (int)$params['to'];
         $header = \models\User::getHeader($this->lvl);
-        $users = \models\User::getUsers($from, $to);
+        $users = User::getUsers($from, $to);
         
         $tpl = $this->buildTable($header, $users, true);
         

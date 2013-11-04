@@ -28,11 +28,11 @@ class User extends \controllers\ViewController {
     
     
     function fromGoogle($data) {
+        $user = \R::findOne('user', ' email = ? ', array($email));
         
-        $user = new \models\User('email', $data['email']);
-        if ($user->exists) {
+        if ($user) {
             if ($user->active) {
-                return $user->info();
+                return $this->info($user);
             } else {
                 $this->app->set('SESSION.tmpdata', $data);
                 $this->app->reroute('/user/create');
@@ -50,20 +50,29 @@ class User extends \controllers\ViewController {
     
     
     function fromLocal($data) {
-        $user = new \models\User('email', $data['email']);
-        if ($user->exists) {
-            if (self::verify($data['password'], $user->data->password, $user->data->salt)) {
+        $user = \R::findOne('user', ' email = ? ', array($email));
+        
+        if ($user) {
+            if (self::verify($data['password'], $user->password, $user->salt)) {
                 // TMP
-                if ($user->data->email == 'carl.holmberg@kunskapsgymnasiet.se') {
-                    $user->update(array('level' => 4));
-                    $user->save();
+                if ($user->email == 'carl.holmberg@kunskapsgymnasiet.se') {
+                    $user->level = 4;
+                    \R::store($user);
                 }
                 // --TMP
-                return $user->info();
+                return $this->info($user);
             }
             return false;
         }
         return false;
+    }
+    
+    function info($user) {
+        return array('firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'email' => $user->email,
+                'level' => $user->level,
+                'id' => $user->id);
     }
     
     
@@ -91,9 +100,8 @@ class User extends \controllers\ViewController {
                 break;
                 
             case 'new':
-                $user = new \models\User(false, false, true);
-                $user->save();
-                $id = $user->data->id;
+                $user = \R::dispense('user');
+                $id = \R::store($user);
                 $app->set('SESSION.newuser', true);
                 $app->reroute('/user/'.$id);
                 break;
@@ -125,8 +133,8 @@ class User extends \controllers\ViewController {
                 }
                 $this->menu = true;
                 $this->footer = true;
-                $user = new \models\User('id', $params['id']);
-                if($user->exists) {
+                $user = \R::load('user', $params['id']);
+                if($user) {
                     $this->slots['id'] = $params['id'];
                     $this->setPage('user');
                     
@@ -136,12 +144,12 @@ class User extends \controllers\ViewController {
                     if ($app->get('SESSION.newuser')) {
                         $app->set('SESSION.newuser', false);
                         
-                        $this->newBarcode($user->data);
+                        $this->newBarcode($user);
                         $this->slots['pagetitle'] = 'Ny användare';
                     } else {
 
-                        $copies = \controllers\Copy::getCopies($user->data, $this->lvl);
-                        $this->addSlots($user->getData());
+                        $copies = Copy::getCopies($user, $this->lvl);
+                        $this->addSlots($user->export(false, false, true));
                         $this->slots['pagetitle'] = $this->slots['user'];
                         $this->addPiece('main', 'tablesorter', 'extrahead');
                         if (count($copies)) {
@@ -162,40 +170,38 @@ class User extends \controllers\ViewController {
     }
     
     function post($app, $params) {
-        if ($params['id'] == 'create' && $this->app->get('POST.email')) {
+        if ($params['id'] == 'create' && $tapp->get('POST.email')) {
         
-            $lastname = $this->app->get('POST.lastname');
+            $lastname = $app->get('POST.lastname');
             
-            $user = new \models\User('email', $this->app->get('POST.email'));
-
-            $uid = $this->app->get('POST.uid');
+            $user = \R::findOne('user', ' email = ? ', array($app->get('POST.email')));
+            
+            $uid = $app->get('POST.uid');
             $uid = $this->reformatUID($uid);
 
             $salt = self::salt();
-            $data = array('email' => $this->app->get('POST.email'),
-                          'firstname' => $this->app->get('POST.firstname'),
-                          'lastname' => $this->app->get('POST.lastname'),
+            $data = array('email' => $app->get('POST.email'),
+                          'firstname' => $app->get('POST.firstname'),
+                          'lastname' => $app->get('POST.lastname'),
                           'uid' => $uid,
-                          'password' => self::hash($this->app->get('POST.password'), $salt),
+                          'password' => self::hash($app->get('POST.password'), $salt),
                           'salt' => $salt,
                           'level' => 1,
                           'status' => 1);
                           
-            if ($user->exists) {
+            if ($user) {
                 unset($data['level']);
-                $user->update($data);
-                $user->save();
+                $user->import($data);
+                \R::store($user);
             } else {
                 $user = \R::findOne('user', ' uid = :uid AND lastname LIKE :lname ', array('uid' => substr($uid, 0 , 6), 'lname' => $lastname.'%'));
                 if ($user) {
                     $user->import($data);
                     \R::store($user);
                 }
-                $id = $user->id;
-                $user = new \models\User('id', $id);
             }
             
-            $app->set('SESSION.user', $user->info());
+            $app->set('SESSION.user', $this->info($user));
             $app->reroute('/');
         } else {
             $this->reqLevel(3);
@@ -205,21 +211,21 @@ class User extends \controllers\ViewController {
             $id = $app->get('POST.pk');
             $value = $app->get('POST.value');
             
-            $user = new \models\User('id', $id);
+            $user = \R::load('user', $id);
             
             if ($field == 'bc_print') {
                 if ($value) {
-                    $this->newBarcode($user->data);
+                    $this->newBarcode($user);
 			    } else {
-			        $barcode = \R::relatedOne($user->data, 'barcode');
+			        $barcode = \R::relatedOne($user, 'barcode');
 			        if ($barcode) \R::trash($barcode);
 			    } 
 			}
             else if ($value == '' || $value[0] == '[') {
                 echo "Ogiltigt värde";
             } else {
-                $user->update(array($field => $value));
-                $user->save();
+                $user->import(array($field => $value));
+                \R::store($user);
             }
         }
     }
@@ -244,14 +250,14 @@ class User extends \controllers\ViewController {
     function delete($app, $params) {
         $this->reqLevel(3);
         $this->tpl = false;
+
+        $user = \R::load('user', $params['id']);
+        $data = serialize($user->export());
         
-        $user = new \models\User('id', $params['id']);
-        $data = serialize($user->data->export());
-        
-		$barcode = \R::relatedOne($user->data, 'barcode');
+		$barcode = \R::relatedOne($user, 'barcode');
 		if ($barcode) \R::trash($barcode);
 			        
-        new \controllers\Log('delete', 'Deleted user "'. $user->data->email.'"', $data);
+        new \controllers\Log('delete', 'Deleted user "'. $user->email.'"', $data);
 
         $user->delete();
 

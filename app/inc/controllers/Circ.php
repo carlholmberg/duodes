@@ -29,91 +29,102 @@ class Circ extends \controllers\ViewController {
     
     
     function borrow($user, $copy) {
-        $data = array('user' => $user->data->email, 'copy' => $copy->data->id, date('Y-m-d H:i'));
-        if ($copy->data->user) {
-            new \controllers\Log('borrow', $user->data->email.' tried to borrowed copy "'. $copy->data->barcode.'"', serialize($data));
+        $data = array('user' => $user->email, 'copy' => $copy->id, date('Y-m-d H:i'));
+        if ($copy->user) {
+            new Log('borrow', $user->email.' tried to borrowed copy "'. $copy->barcode.'"', serialize($data));
             $this->app->set('SESSION.msg', 'Boken är redan utlånad');
             $this->app->set('SESSION.circ', 'borrow');
             $this->app->reroute('/circ');
         }
-        if ($copy->data->collection) {
-            if ($copy->data->collection->type == 'days') {
-                $copy->data->return_date = strtotime('+ '.$copy->data->collection->value.' days');
-            } else if ($copy->data->collection->type == 'ref') {
-                new \controllers\Log('borrow', $user->data->email.' tried to borrowed copy "'. $copy->data->barcode.' (ref)"', serialize($data));
+        if ($copy->collection) {
+            if ($copy->collection->type == 'days') {
+                $copy->return_date = strtotime('+ '.$copy->collection->value.' days');
+            } else if ($copy->collection->type == 'ref') {
+                new Log('borrow', $user->email.' tried to borrowed copy "'. $copy->barcode.' (ref)"', serialize($data));
                 $this->app->set('SESSION.msg', 'Boken är får inte lånas');
                 $this->app->set('SESSION.circ', 'borrow');
                 $this->app->reroute('/circ');
-            } else if ($copy->data->collection->type == 'fixed') {
+            } else if ($copy->collection->type == 'fixed') {
                 if ($this->app->get('SESSION.FixedCollDate')) {
-                    $copy->data->return_date = $this->app->get('SESSION.FixedCollTS');
+                    $copy->return_date = $this->app->get('SESSION.FixedCollTS');
                 } else {
-                    $ts = unserialize($copy->data->collection->value);
-                    $copy->data->return_date = $ts[0]['ts'];
+                    $ts = unserialize($copy->collection->value);
+                    $copy->return_date = $ts[0]['ts'];
                 }
             }
         }
-        new \controllers\Log('borrow', $user->data->email.' borrowed copy "'. $copy->data->barcode.'"', serialize($data));
-        $user->borrow($copy);
-        $name = $user->data->firstname.' '.$user->data->lastname;
-        $this->app->set('SESSION.msg', $name.' lånade '.$copy->data->title->title);
+        new Log('borrow', $user->email.' borrowed copy "'. $copy->barcode.'"', serialize($data));
+        
+        $user->ownCopy[] = $copy;
+        Title::updateBorrowed($copy->title);
+        \R::store($user);     
+           
+        $name = $user->firstname.' '.$user->lastname;
+        $this->app->set('SESSION.msg', $name.' lånade '.$copy->title->title);
         $this->app->set('SESSION.circ', 'borrow');
         $this->app->reroute('/circ');
+    }
+    
+    function returnCopy($copy) {
+        unset($copy->user);
+        Title::updateBorrowed($copy->title);
+        \R::store($copy);
     }
     
     function post($app, $params) {
         if ($app->get('POST.barcode')) {
             $cid = strtoupper(trim($app->get('POST.barcode')));
-            $copy = new \models\Copy('barcode', $cid);
-            if ($copy->exists) {
-                if ($copy->data->user) {
-                    $data = array('user' => $copy->data->user->email, 'date' => date('Y-m-d H:i'));
-                    new \controllers\Log('return', 'Returned copy "'. $copy->data->barcode.'"', serialize($data));
-                    $user = $copy->data->user;
-                    $copy->returnCopy();
+            $copy = \R::findOne('copy', ' barcode = ? ', array($cid));
+            if ($copy) {
+                if ($copy->user) {
+                    $data = array('user' => $copy->user->email, 'date' => date('Y-m-d H:i'));
+                    new Log('return', 'Returned copy "'. $copy->barcode.'"', serialize($data));
+                    $user = $copy->user;
+                    
+                    $this->returnCopy($copy);
                     $name = $user->firstname.' '.$user->lastname;
-                    $collection = ($copy->data->collection)? $copy->data->collection->name : '';
-                    $msg = sprintf("%s återlämnade %s (%s). [%s]", $name, $copy->data->title->title, $copy->data->barcode, $collection);
+                    $collection = ($copy->collection)? $copy->collection->name : '';
+                    $msg = sprintf("%s återlämnade %s (%s). [%s]", $name, $copy->title->title, $copy->barcode, $collection);
                     $app->set('SESSION.msg', $msg);
                     $app->set('SESSION.circ', 'return');
-                    $this->app->reroute('/circ');
+                    $app->reroute('/circ');
                 } else {
                     $data = array('date' => date('Y-m-d H:i'));
-                    new \controllers\Log('return', 'Tried to return copy "'. $copy->data->barcode.'"', serialize($data));
-                    $this->app->set('SESSION.msg', 'Försökte återlämna '.$copy->data->title->title.' som inte är utlånad');
+                    new Log('return', 'Tried to return copy "'. $copy->barcode.'"', serialize($data));
+                    $app->set('SESSION.msg', 'Försökte återlämna '.$copy->title->title.' som inte är utlånad');
                     $app->set('SESSION.circ', 'return');
-                    $this->app->reroute('/circ');
+                    $app->reroute('/circ');
                 }
             }
             
-            $this->app->set('SESSION.msg', 'Felaktig streckkod');
+            $app->set('SESSION.msg', 'Felaktig streckkod');
             $app->set('SESSION.circ', 'return');
-            $this->app->reroute('/circ');
+            $app->reroute('/circ');
         } else {
             $b1 = strtoupper(trim($app->get('POST.bc1')));
             $b2 = strtoupper(trim($app->get('POST.bc2')));
             
             // b1: copy, b2: user
-            $copy = new \models\Copy('barcode', $b1);
-            if ($copy->exists) {
-                $user = new \models\User('barcode', $b2);
-                if ($user->exists) {    
+            $copy = \R::findOne('copy', ' barcode = ? ', array($b1));
+            if ($copy) {
+                $user = \R::findOne('user', ' barcode = ? ', array($b2));
+                if ($user) {    
                     $this->borrow($user, $copy);
                 }
             }
             
             // b2: copy, b1: user
-            $copy = new \models\Copy('barcode', $b2);
-            if ($copy->exists) {
-                $user = new \models\User('barcode', $b1);
-                if ($user->exists) {
+            $copy = \R::findOne('copy', ' barcode = ? ', array($b2));
+            if ($copy) {
+                $user = \R::findOne('user', ' barcode = ? ', array($b1));
+                if ($user) {
                      $this->borrow($user, $copy);
                 }
             }
             
-            $this->app->set('SESSION.msg', 'Felaktiga streckkoder');
+            $app->set('SESSION.msg', 'Felaktiga streckkoder');
             $app->set('SESSION.circ', 'borrow');
-            $this->app->reroute('/circ');
+            $app->reroute('/circ');
         }
     
     }

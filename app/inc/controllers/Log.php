@@ -23,6 +23,8 @@ class Log extends \controllers\Controller {
             'user' => $user['email'],
             'msg' => $message,
             'data' => $data);
-        $log = new \models\Log($info);
+        $log = \R::dispense('log');
+        $log->import($info);
+        \R::store($log);
     }
 }

@@ -36,12 +36,7 @@ class Copy extends \models\DBModel {
             $this->active = (bool)$this->data->status;
         }
     }
-    
-    function returnCopy() {
-        unset($this->data->user);
-        \models\Title::updateBorrowed($this->data->title);        
-        $this->save();
-    }
+
     
     
     static function getHeader($lvl, $for='title') {
