@@ -12,11 +12,13 @@
     
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+        <link rel="stylesheet" type="text/css" href="css/datepicker.css" />
         
         <script src="js/jquery.js"></script>
         <script src="js/bootstrap.js"></script>
         
         <script src="js/bootbox.js"></script>
+        <script src="js/bootstrap-datepicker.js"></script>
         
         <!-- cut:tablesorter -->
         <link rel="stylesheet" type="text/css" href="css/theme.bootstrap.css" />

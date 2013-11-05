@@ -30,7 +30,7 @@ class ViewController extends \app\Controller
         $this->slots = array('base_href' => 'http://'.$this->app->get('HOST').$this->app->get('BASE').'/');
         
         if ($this->app->get('SESSION.msg')) {
-            $this->addPiece('main', 'msg', 'msg', array('msg' => $this->app->get('SESSION.msg'), 'type' => 'warning'));
+            $this->addPiece('main', $this->app->get('SESSION.msg'), 'msg');
             $this->app->set('SESSION.msg', false);
         }
         
@@ -50,9 +50,11 @@ class ViewController extends \app\Controller
         return false;
     }
     
-    function addMessage($tpl, $data) {
-    
-    
+    function addMessage($tpl, $data=array()) {
+        $msgs = $this->loadTpl('messages');
+        $tpl = $msgs->get($tpl);
+        $tpl->injectAll($data);
+        $this->app->set('SESSION.msg', $tpl);
     }
     
     

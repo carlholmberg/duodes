@@ -32,7 +32,7 @@ class Circ extends \app\ViewController {
         $data = array('user' => $user->email, 'copy' => $copy->id, date('Y-m-d H:i'));
         if ($copy->user) {
             new Log('borrow', $user->email.' tried to borrowed copy "'. $copy->barcode.'"', serialize($data));
-            $this->app->set('SESSION.msg', 'Boken är redan utlånad');
+            $this->addMessage('circ_b_out');
             $this->app->set('SESSION.circ', 'borrow');
             $this->app->reroute('/circ');
         }
@@ -41,7 +41,7 @@ class Circ extends \app\ViewController {
                 $copy->return_date = strtotime('+ '.$copy->collection->value.' days');
             } else if ($copy->collection->type == 'ref') {
                 new Log('borrow', $user->email.' tried to borrowed copy "'. $copy->barcode.' (ref)"', serialize($data));
-                $this->app->set('SESSION.msg', 'Boken är får inte lånas');
+                $this->addMessage('circ_b_ref');
                 $this->app->set('SESSION.circ', 'borrow');
                 $this->app->reroute('/circ');
             } else if ($copy->collection->type == 'fixed') {
@@ -60,7 +60,7 @@ class Circ extends \app\ViewController {
         \R::store($user);     
            
         $name = $user->firstname.' '.$user->lastname;
-        $this->app->set('SESSION.msg', $name.' lånade '.$copy->title->title);
+        $this->addMessage('circ_b_ok', array('name'=>$name, 'title'=>$copy->title->title));
         $this->app->set('SESSION.circ', 'borrow');
         $this->app->reroute('/circ');
     }
@@ -82,10 +82,11 @@ class Circ extends \app\ViewController {
                     $user = $copy->user;
                     
                     $this->returnCopy($copy);
-                    $name = $user->firstname.' '.$user->lastname;
                     $collection = ($copy->collection)? $copy->collection->name : '';
-                    $msg = sprintf("%s återlämnade %s (%s). [%s]", $name, $copy->title->title, $copy->barcode, $collection);
-                    $app->set('SESSION.msg', $msg);
+                    $this->addMessage('circ_r_ok', array(
+                        'fname'=>$user->firstname, 'lname'=>$user->lastname,
+                        'coll'=>$collection, 'title'=>$copy->title->title,
+                        'bc'=>$copy->barcode));
                     $app->set('SESSION.circ', 'return');
                     $app->reroute('/circ');
                 } else {

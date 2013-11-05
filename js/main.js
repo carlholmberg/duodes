@@ -142,4 +142,11 @@ $(document).ready(function() {
         $("#collection").append(html);
     });
 
+    $('#uid').datepicker({
+        format: "yymmdd",
+        startView: 2,
+        endDate: "today",
+        language: "sv"
+    });
+
 });

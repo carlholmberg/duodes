@@ -21,9 +21,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="uid" class="col-lg-2 control-label">Personnummer</label>
+            <label for="uid" class="col-lg-2 control-label">Födelsedag</label>
             <div class="col-lg-10">
-                <input type="text" class="form-control" name="uid" id="uid"  placeholder="Personnummer" autocomplete="off">
+                <input type="text" class="form-control" name="uid" id="uid"  placeholder="Födelsedag" autocomplete="off">
                  <p>(används för att kontrollera identitet)</p>
             </div>
         </div>

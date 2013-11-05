@@ -23,7 +23,7 @@
     
 namespace app;
 
-class User extends \app\ViewController {
+class User extends ViewController {
     
     static function salt() {
         return substr(str_shuffle(MD5(microtime())), 0, 5);
@@ -41,10 +41,10 @@ class User extends \app\ViewController {
     
     
     function fromGoogle($data) {
-        $user = \R::findOne('user', ' email = ? ', array($email));
+        $user = \R::findOne('user', ' email = ? ', array($data['email']));
         
         if ($user) {
-            if ($user->active) {
+            if ($user->status) {
                 return $this->info($user);
             } else {
                 $this->app->set('SESSION.tmpdata', $data);
@@ -89,19 +89,6 @@ class User extends \app\ViewController {
     }
     
     
-    function reformatUID($uid) {
-        $uid = implode('', explode('-', $uid));
-        if (strlen($uid) == 10) {
-            return $uid;
-        } else if (strlen($uid) == 6) {
-            return $uid;
-        } else if (strlen($uid) == 12 && intval(substr($uid, 0, 2)) > 18) {
-            return substr($uid, 2);
-        }
-        return false;
-    }
-    
-    
     function get($app, $params) {
         switch ($params['id']) {
             case 'create':
@@ -109,6 +96,7 @@ class User extends \app\ViewController {
                 if (!is_array($data)) $this->app->error(404);
                 $this->slots['pagetitle'] = 'Konto';
                 $this->slots = array_merge($this->slots, $data);
+                $this->addPiece('main', 'tablesorter', 'extrahead');
                 $this->setPage('user-create');
                 break;
                 
@@ -183,14 +171,13 @@ class User extends \app\ViewController {
     }
     
     function post($app, $params) {
-        if ($params['id'] == 'create' && $tapp->get('POST.email')) {
+        if ($params['id'] == 'create' && $app->get('POST.email')) {
         
             $lastname = $app->get('POST.lastname');
             
             $user = \R::findOne('user', ' email = ? ', array($app->get('POST.email')));
             
             $uid = $app->get('POST.uid');
-            $uid = $this->reformatUID($uid);
 
             $salt = self::salt();
             $data = array('email' => $app->get('POST.email'),
