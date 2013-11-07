@@ -37,7 +37,15 @@ function displayUsers(ids) {
 }
    
 function update(what, ids, from, to) {
-    if (from > ids) return;
+    if (from > ids) {
+        $('.editable').editable({
+            emptytext: "Tom",
+            success: function(response, newValue) {
+                if(response.status == 'error') return response.msg;
+            }
+        });
+        return;
+    };
     $.get(what+"/"+from+"/"+to, function(html) {
         $("table tbody").append(html);
         var resort = true;
@@ -51,9 +59,9 @@ function initCopies() {
   var numrows = $("table tbody tr").length;
   var widgets = Array();
   if (numrows > 20) {
-    widgets = [ "uitheme", "filter", "zebra", "group" ];
+    widgets = [ "uitheme", "filter", "group" ];
   } else {
-    widgets = [ "uitheme", "zebra"];
+    widgets = [ "uitheme"];
     $("table tfoot tr").hide();
   }
   $("table").tablesorter({
@@ -62,8 +70,8 @@ function initCopies() {
     headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
     widgets : widgets,
     widgetOptions : {
-      zebra : ["even", "odd"],
       filter_reset : ".reset",
+      widthFixed: true,
       group_collapsible : true,
       filter_hideFilters : true,
     },
@@ -78,10 +86,10 @@ function initBorrowed() {
     theme : "bootstrap",
     widthFixed: true,
     headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
-    widgets : [ "uitheme", "zebra"],
+    widgets : [ "uitheme"],
     widgetOptions : {
-      zebra : ["even", "odd"],
       filter_reset : ".reset",
+      widthFixed: true,
       group_collapsible : true,
       filter_hideFilters : true,
     },
@@ -96,9 +104,9 @@ function initTitles() {
     theme : "bootstrap",
     widthFixed: true,
     headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
-    widgets : [ "uitheme", "filter", "zebra", "resizable" ],
+    widgets : [ "uitheme", "filter", "resizable" ],
     widgetOptions : {
-      zebra : ["even", "odd"],
+      widthFixed: true,
       filter_reset : ".reset",
     },
   });
@@ -110,9 +118,9 @@ function initUsers() {
     theme : "bootstrap",
     widthFixed: true,
     headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
-    widgets : [ "uitheme", "filter", "zebra", "group" ],
+    widgets : [ "uitheme", "filter", "group" ],
     widgetOptions : {
-      zebra : ["even", "odd"],
+      widthFixed: true,
       filter_reset : ".reset",
       group_collapsible : true,
     },
@@ -137,11 +145,12 @@ $(document).ready(function() {
     filterRow  : '', // filter row class
   });
   
-  
-    $.get("ajax/collections-opt", function(html) {
-        $("#collection").append(html);
-    });
-
+    if ($('#collection').length) {
+        $.get("ajax/collections-opt", function(html) {
+            $("#collection").append(html);
+        });
+    }
+    
     $('#uid').datepicker({
         format: "yymmdd",
         startView: 2,

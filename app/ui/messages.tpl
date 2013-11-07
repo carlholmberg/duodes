@@ -26,3 +26,10 @@
             <p><em>#coll#</em></p>
         </div>
         <!-- /cut:circ_r_ok -->
+
+        <!-- cut:circ_r_in -->
+        <div class="container alert alert-warning fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <p><span class="glyphicon glyphicon-exclamation-sign"></span> Försökte återlämna <strong>#title#</strong> (#bc#) som inte är utlånad</p>
+        </div>
+        <!-- /cut:circ_r_in -->

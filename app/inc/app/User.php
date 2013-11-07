@@ -63,7 +63,15 @@ class User extends ViewController {
     
     
     function fromLocal($data) {
-        $user = \R::findOne('user', ' email = ? ', array($email));
+        list($cuser,$cpass) = $this->app->get('CIRCUSER');
+        if ($cuser == $data['email'] && $cpass = $data['password']) {
+            return array('firstname' => '',
+                'lastname' => '',
+                'email' => '',
+                'level' => 2,
+                'id' => 'circ');
+        }
+        $user = \R::findOne('user', ' email = ? ', array($data['email']));
         
         if ($user) {
             if (self::verify($data['password'], $user->password, $user->salt)) {
@@ -288,21 +296,21 @@ class User extends ViewController {
     static function getHeader($lvl) {
         $header = array(
             'class'=>array(
-                'class'=>'group-letter-3', 'name'=>'{Class}'),
+                'class'=>'group-letter-3 filter-select', 'name'=>'{Class}'),
             'lastname'=>array(
-                'class'=>'', 'name'=>'{Lastname}', 'href' => 'user', 
+                'class'=>'group-false', 'name'=>'{Lastname}', 'href' => 'user', 
                 'uid' => true),
             'firstname'=>array(
-                'class'=>'', 'name'=>'{Firstname}', 'href' => 'user', 
+                'class'=>'group-false', 'name'=>'{Firstname}', 'href' => 'user', 
                 'uid' => true),
             'level'=>array(
-                'class'=>'', 'name'=>'{Level}'),
+                'class'=>'group-false filter-select', 'name'=>'{Level}'),
             'status'=>array(
-                'class'=>'', 'name'=>'{Status}'),
+                'class'=>'group-false filter-select', 'name'=>'{Status}'),
             'books'=>array(
-                'class'=>'', 'name'=>'{Borrowed books}'),
+                'class'=>'group-false filter-select', 'name'=>'{Borrowed books}'),
             'bc_print'=>array(
-                'class'=>'', 'name'=>'{Print barcode}'));
+                'class'=>'group-false filter-select sorter-false text-center', 'name'=>'', 'icon'=>'barcode'));
         
         if ($lvl < 3) {
             unset($header['level']);

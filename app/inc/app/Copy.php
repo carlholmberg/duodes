@@ -32,11 +32,18 @@ class Copy extends \app\Controller {
         
         switch($name) {
             case 'borrowed_by':
-                $user = \R::load('user', $value);
+                if ($value) {
+                    $user = \R::load('user', $value);
+                    $user->ownCopy[] = $copy;
+                    Title::updateBorrowed($copy->title);
+                    \R::store($user);
+                } else {
+                    unset($copy->user);
+                    unset($copy->return_date);
+                    Title::updateBorrowed($copy->title);
+                    \R::store($copy);
+                }
                 
-                $user->ownCopy[] = $copy;
-                Title::updateBorrowed($copy->title);
-                \R::store($user);
                 break;
             
             case 'bc_print':
@@ -81,9 +88,6 @@ class Copy extends \app\Controller {
             $cop['title'] = $c->title->title;
             if ($lvl > 2) {
                 if ($cop['user_id']) {
-                    if ($cop['return_date']) {
-                        $cop['return_date'] = date('Y-m-d', $cop['return_date']);
-                    }
                     $user = $c->user;
                     $name = $user->lastname.', '.$user->firstname.' ('.$user->class.')';
                     $cop['borrowed_by'] = $name;
@@ -93,6 +97,9 @@ class Copy extends \app\Controller {
             }
             if ($lvl == 4) {
                 $cop['bc_print'] = \R::relatedOne($c, 'barcode')? 1 : 0;
+            }
+            if ($lvl > 2) {
+                $cop['return'] = '<span class="glyphicon glyhpicon-return"></span>';
             }
             
             $copies[] = $cop;
@@ -109,13 +116,13 @@ class Copy extends \app\Controller {
                 'collection' => array(
                     'class' => 'group-word filter-false', 'name' => '{Collection}'),
                 'barcode' => array(
-                    'class' => '', 'name' => '{Barcode}'),
+                    'class' => 'group-false', 'name' => '{Barcode}'),
                 'borrowed_by' => array(
-                    'class' => '', 'name' => '{Borrowed}', 'href' => 'user', 'uid' => true),
+                    'class' => 'group-false', 'name' => '{Borrowed}', 'href' => 'user', 'uid' => true),
                 'return_date' => array(
-                    'class' => '', 'name' => '{Return date}'),
+                    'class' => 'group-false', 'name' => '{Return date}'),
                 'bc_print' => array(
-                    'class' => '', 'name' => '{Print barcode}')
+                    'class'=>'sorter-false', 'name'=>'', 'icon'=>'barcode')
             );
        
             if ($lvl < 2) {
@@ -127,13 +134,18 @@ class Copy extends \app\Controller {
                 'collection' => array(
                     'class' => 'group-word filter-false', 'name' => '{Collection}'),
                 'title' => array(
-                    'class' => '', 'name' => '{Title}', 'href' => 'title', 'tid' => true),
+                    'class' => 'group-false', 'name' => '{Title}', 'href' => 'title', 'tid' => true),
                 'barcode' => array(
-                    'class' => '', 'name' => '{Barcode}'),
+                    'class' => 'group-false', 'name' => '{Barcode}'),
                 
                 'return_date' => array(
-                    'class' => '', 'name' => '{Return date}'),
+                    'class' => 'group-false', 'name' => '{Return date}'),
+                'return' => array(
+                    'class' => 'group-false filter-false sorter-false', 'name' => '', 'icon' => 'repeat', 'href' => 'copy'),
             );
+            if ($lvl < 3) {
+                unset($header['return']);
+            }
         }
         return $header;
     }

@@ -34,14 +34,14 @@
         <!-- cut:xeditable -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap-editable.css" />
         <script src="js/bootstrap-editable.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="css/select2.css" />
-        <link rel="stylesheet" type="text/css" href="css/select2-bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="css/select2/select2.css" />
+        <link rel="stylesheet" type="text/css" href="css/select2/select2-bootstrap.css" />
         <script src="js/select2.js"></script>
         
         <script>
 $(document).ready(function() {
     //toggle `popup` / `inline` mode
-    $.fn.editable.defaults.mode = 'popup';     
+    $.fn.editable.defaults.mode = 'inline';     
     
     $('.editable').editable({
         emptytext: "Tom",
@@ -115,6 +115,16 @@ $(document).ready(function() {
 
     });
 
+    $('#registered').editable({
+        format: 'yyyy-mm',
+        datepicker: {
+            format: 'yyyy-mm',
+            startView: 0,
+            minViewMode: 1,
+            language: 'sv'
+        }
+    });
+    
 });
         
         </script>
@@ -193,7 +203,7 @@ $(document).ready(function() {
                                 <li><a href="#">Kontakta Talgdank</a></li>-->
                             </ul>
                         </div>
-                        <div class="col-md-4"><img src="img/duodes.png" class="pull-right" alt="branding" width="240" />
+                        <div class="col-md-4"><img src="img/duodes.png" class="pull-right" alt="branding" width="200" />
                     </div>
                 </div>
             </div>

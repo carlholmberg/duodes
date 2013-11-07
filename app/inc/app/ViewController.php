@@ -127,8 +127,6 @@ class ViewController extends \app\Controller
                     $nid = $id;
                 }
                 
-                if ($item[$cell] == '' && isset($header[$cell]['href']) && !isset($header[$cell]['id'])) $item[$cell] = 'Tom';
-                if ($item[$cell] == '') $item[$cell] = '-';
                 if ($cell == 'bc_print') {
                     $row->glue('cell', $row->get('scell')->injectAll(
                         array('href' => 'user',
@@ -137,7 +135,12 @@ class ViewController extends \app\Controller
                               'value' => $item[$cell],
                               'source' => '{1: "Ja", 0: "Nej"}',
                               'name' => $header[$cell]['name'])));
-                } else if (isset($header[$cell]['href']) && $item[$cell] !== '-') {
+                    continue;
+                }
+                if ($item[$cell] == '' && isset($header[$cell]['href']) && !isset($header[$cell]['id'])) $item[$cell] = 'Tom';
+                if ($item[$cell] == '') $item[$cell] = '-';
+                
+                if (isset($header[$cell]['href']) && $item[$cell] !== '-') {
                     $row->glue('cell', $row->get('acell')->injectAll(array('href' => $header[$cell]['href'], 'id'=>$nid, 'cell'=>$item[$cell])));
                 } else {
                     $row->glue('cell', $row->get('cell')->injectAll(array('id'=>$id, 'cell'=>$item[$cell])));

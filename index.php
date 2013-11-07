@@ -58,6 +58,7 @@ $menu = array(
 
 $app = require('app/lib/f3/base.php');
 $app->config('data/config.ini');
+$app->config('data/users.ini');
 
 /*$app->set('ONERROR', function() {
     if ($app->get('AJAX')) return;

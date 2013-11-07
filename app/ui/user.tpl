@@ -27,7 +27,7 @@
 	<thead>
 		<tr>
 		    <!-- cut:hcell -->
-			<th class="#class#">#name#</th>
+			<th class="#class#"><span class="glyphicon glyphicon-#icon#"></span>#name#</th>
 			<!-- /cut:hcell -->
 			<!-- paste:hcell -->
 	</thead>

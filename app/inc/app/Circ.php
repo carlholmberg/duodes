@@ -38,7 +38,7 @@ class Circ extends \app\ViewController {
         }
         if ($copy->collection) {
             if ($copy->collection->type == 'days') {
-                $copy->return_date = strtotime('+ '.$copy->collection->value.' days');
+                $copy->return_date = date('Y-m-d', strtotime('+ '.$copy->collection->value.' days'));
             } else if ($copy->collection->type == 'ref') {
                 new Log('borrow', $user->email.' tried to borrowed copy "'. $copy->barcode.' (ref)"', serialize($data));
                 $this->addMessage('circ_b_ref');
@@ -67,6 +67,7 @@ class Circ extends \app\ViewController {
     
     function returnCopy($copy) {
         unset($copy->user);
+        unset($copy->return_date);
         Title::updateBorrowed($copy->title);
         \R::store($copy);
     }
@@ -92,7 +93,7 @@ class Circ extends \app\ViewController {
                 } else {
                     $data = array('date' => date('Y-m-d H:i'));
                     new Log('return', 'Tried to return copy "'. $copy->barcode.'"', serialize($data));
-                    $app->set('SESSION.msg', 'Försökte återlämna '.$copy->title->title.' som inte är utlånad');
+                    $this->addMessage('circ_r_in', array('title' => $copy->title->title, 'bc' => $copy->barcode));
                     $app->set('SESSION.circ', 'return');
                     $app->reroute('/circ');
                 }

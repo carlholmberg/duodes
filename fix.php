@@ -6,13 +6,14 @@ include('app/lib/rb.php');
 R::setup('sqlite:data/db.db');
 
 $step = isset($_GET['do'])? $_GET['do'] : 'first';
-
+    
 switch($step) {
 
     case 'coll':
         $val = array(
-            array('name' => 'år', 'ts' => strtotime("10 June 2014")),
-            array('name' => 'ht', 'ts' => strtotime("10 January 2014")));
+         array('name' => 'år', 'ts' => date('Y-m-d', strtotime("10 June 2014"))),
+         array('name' => 'ht', 'ts' => date('Y-m-d', strtotime("10 January 2014")))
+        );
         
         $colls = array(
             'Kurslitteratur' => array('type' => 'fixed', 'value' => serialize($val)),

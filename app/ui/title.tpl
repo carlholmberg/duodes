@@ -27,16 +27,18 @@
         <h5>ISBN <!-- cut:isbnedit --><span id="refresh" class="btn btn-xs btn-warning pull-right"  title="{Refresh title}"><span class="glyphicon glyphicon-refresh"></span></span><!-- /cut:isbnedit --><!-- paste:isbnedit --></h5><p id="isbn" data-type="text" data-pk="#id#" data-original-title="ISBN" data-url="title/#id#" class="editable editable-click">#isbn#</p>
         <h5>{Language}</h5><p id="lang" data-type="select" data-value="#lang#" data-pk="#id#" data-original-title="{Language}" data-url="title/#id#" class="editable editable-click" data-source="[{value: 'se', text: 'Svenska'}, {value: 'en', text: 'Engelska'}, {value: 'de', text: 'Tyska'}, {value: 'fr', text: 'Franska'}, {value: 'sp', text: 'Spanska'}]"></p>
         <h5>{Description}</h5><p id="desc" data-type="textarea" data-pk="#id#" data-original-title="{Description}" data-url="title/#id#" class="editable editable-click">#desc#</p>
-        <h5>{Keywords}</h5><p id="keywords" data-type="text" data-pk="#id#" data-original-title="{Keywords}" data-url="title/#id#" class="editable editable-click" >#keywords#</p>
+        <h5>{Keywords}</h5><p id="keywords" data-type="select2" data-pk="#id#" data-original-title="{Keywords}" data-url="title/#id#" class="editable editable-click" >#keywords#</p>
             
     </div>
     <div class="col-md-5">
         <h5>{Publisher}</h5><p id="publisher" data-type="text" data-pk="#id#" data-original-title="{Publisher}" data-url="title/#id#" class="editable editable-click">#publisher#</p>
-        <h5>{Date}</h5><p id="date" data-type="text" data-pk="#id#" data-original-title="{Year}" data-url="title/#id#" class="editable editable-click">#date#</p>
+        <h5>{Year}</h5><p id="date" data-type="text" data-pk="#id#" data-original-title="{Year}" data-url="title/#id#" class="editable editable-click">#date#</p>
         <h5>{Code}</h5><p id="code" data-type="text" data-pk="#id#" data-original-title="{Code}" data-url="title/#id#" class="editable editable-click">#code#</p>
             
         <h5>Länk:</h5><p><a href="#url#" title="Länk till post om titel">#url#</a></p>
-        <h5>{Registered}</h5><p id="registered" data-type="text" data-pk="#id#" data-original-title="{Registered}" data-url="title/#id#" class="editable editable-click">#registered#</p>
+        <h5>{Registered}</h5><p id="registered" data-type="date" data-pk="#id#" data-original-title="{Registered}" data-url="title/#id#" class="editable editable-click">#registered#</p>
+        
+        
     </div>
 </div>
 
@@ -47,7 +49,7 @@
 	<thead>
 		<tr>
 		    <!-- cut:hcell -->
-			<th class="#class#">#name#</th>
+			<th class="#class#"><span class="glyphicon glyphicon-#icon#"></span>#name#</th>
 			<!-- /cut:hcell -->
 			<!-- paste:hcell -->
 	</thead>

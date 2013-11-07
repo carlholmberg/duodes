@@ -85,6 +85,8 @@ return array(
 	'Save' => 'Spara',
 	'Find' => 'Sök',
 	
+	'Print barcode' => 'Skriv ut streckkod',
+	
 	'Firstname' => 'Förnamn',
 	'Lastname' => 'Efternamn',
 	

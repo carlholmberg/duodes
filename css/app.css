@@ -1,3 +1,6 @@
+body { padding-top: 70px; }
+footer { margin-top: 70px; }
+
 #cover {
     border: 1px solid #555;
     box-shadow: 3px 3px 2px #888888;
@@ -22,6 +25,17 @@
     vertical-align: top;
 }
 
+tr:not(.filtered):nth-child(even) {
+    background-color:#fff;
+}
+tr:not(.filtered):nth-child(odd) {
+    background-color:#f9f9f9;
+}
+
 .centered {
     text-align: center;
+}
+
+.navbar-wrapper .glyphicon {
+    font-size: 18px;
 }
