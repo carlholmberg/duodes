@@ -17,6 +17,9 @@ class Circ extends \app\ViewController {
         $this->menu = true;
         $this->footer = true;
         $this->setPage('circ');
+        if ($this->hasLevel(3)) {
+            $this->addPiece('page', 'fixedcoll', 'fixedcoll');
+        }
         $this->slots['pagetitle'] = '{Circ}';
         
         if ($app->get('SESSION.circ')) {
@@ -45,8 +48,8 @@ class Circ extends \app\ViewController {
                 $this->app->set('SESSION.circ', 'borrow');
                 $this->app->reroute('/circ');
             } else if ($copy->collection->type == 'fixed') {
-                if ($this->app->get('SESSION.FixedCollDate')) {
-                    $copy->return_date = $this->app->get('SESSION.FixedCollTS');
+                if ($this->app->get('SESSION.FixedColl')) {
+                    $copy->return_date = $this->app->get('SESSION.FixedColl');
                 } else {
                     $ts = unserialize($copy->collection->value);
                     $copy->return_date = $ts[0]['ts'];

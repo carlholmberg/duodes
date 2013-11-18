@@ -5,6 +5,7 @@ return array(
 	
 	'Yes' => 'Ja',
 	'No' => 'Nej',
+	'What' => 'Vad',
 	
 	'About' => 'Om',
 	'Login' => 'Logga in',
@@ -27,6 +28,7 @@ return array(
 	'Filter author' => 'Filtrera författare',
 	'Total' => 'Totalt',
 	'Clear' => 'Rensa',
+	'Clear all' => 'Rensa alla',
 	'Edit' => 'Redigera',
 	'Delete' => 'Radera',
 	'Search the database' => 'Sök i databasen',
@@ -60,7 +62,9 @@ return array(
 	'Class' => 'Basgrupp',
 	'Level' => 'Nivå',
 	'Type' => 'Typ',
+	'Pick' => 'Välj',
 	'Status' => 'Status',
+	'Label lists' => 'Etikettlistor',
 	
 	'User id' => 'Personnummer',
 	'Subject' => 'Ämne',
@@ -84,13 +88,14 @@ return array(
 	'Cancel' => 'Avbryt',
 	'Save' => 'Spara',
 	'Find' => 'Sök',
+	'Print' => 'Skriv ut',
+	'in' => 'i',
 	
 	'Print barcode' => 'Skriv ut streckkod',
 	
 	'Firstname' => 'Förnamn',
 	'Lastname' => 'Efternamn',
 	
-	'Print barcode' => 'Skriv ut streckkod',
 	'Labels in queue' => 'Etiketter i kö',
 	
 	'Add new title' => 'Lägg till nya verk',
@@ -125,8 +130,11 @@ return array(
 	'Scan or enter the barcode for the book and user' => 'Läs in eller skriv av streckkoden för boken och användaren.',
 	
 	'Delete title' => 'Radera titel',
-	'Are you sure you want to delete this title?' => 'Är du säker på att du vill radera den här titeln?',
-	'Are you sure you want to delete this' => 'Är du säker på att du vill radera denna',
+	'Delete copy' => 'Radera kopia',
+    'Delete' => 'Radera',
+    
+    
+	'Are you sure you want to delete this?' => 'Är du säker på att du vill radera detta?',
 	
 	'Are you sure you want to refresh data for this title?' => 'Är du säker på att du vill ladda om data för den här titeln?',
 	'Refresh title' => 'Ladda om titel',

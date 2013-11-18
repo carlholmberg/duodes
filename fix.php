@@ -43,6 +43,7 @@ switch($step) {
                 $user->class = $user->usermeta->bg;
                 $user->uid = $user->u_id;
                 $user->status = 0;
+                $user->email = '';
                 R::store($user);
             }
         }

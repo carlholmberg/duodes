@@ -36,16 +36,23 @@ class Main extends ViewController {
     
     function search($app, $params) {
         $terms = $app->get('GET.search');
-        if ($this->hasLevel(3)) {
-            $user = \R::findOne('user', ' barcode = ? ', array($terms));
-            if ($user) {
-                $app->reroute('/user/'.$user->id);
+        if (strpos($terms, ' ') === false) {
+            if ($this->hasLevel(3)) {
+                $user = \R::findOne('user', ' barcode = ? ', array($terms));
+                if ($user) {
+                    $app->reroute('/user/'.$user->id);
+                }
             }
-        }
         
-        $copy = \R::findOne('copy', ' barcode = ? ', array($terms));
-        if ($copy) {
-            $app->reroute('/title/'.$copy->title->id);
+            $copy = \R::findOne('copy', ' barcode = ? ', array($terms));
+            if ($copy) {
+                $app->reroute('/title/'.$copy->title->id);
+            }
+        
+            $title = \R::findOne('title', ' isbn = ? ', array($terms));
+            if ($title) {
+                $app->reroute('/title/'.$title->id);
+            }
         }
         
         $this->menu = true;
@@ -57,9 +64,9 @@ class Main extends ViewController {
         } else {
             $this->setPage('search');
         }
-        $terms = $app->get('GET.search');
+        
         if (substr($terms, 0, 1) == '"') $terms = array(str_replace('"', '', $terms));
-        else $terms = explode(' ', $terms);
+        else $terms = array_filter(explode(' ', $terms));
 
         $results = array();
         foreach ($terms as $term) {

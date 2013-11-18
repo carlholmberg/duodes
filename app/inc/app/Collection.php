@@ -10,7 +10,7 @@
  */
 namespace app;
 
-class Collection extends \app\Controller {
+class Collection extends Controller {
     
     static function getCollections() {
         $colls = \R::findAll('collection');

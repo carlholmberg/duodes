@@ -29,7 +29,6 @@
         <script src="js/jquery.tablesorter.pager.min.js"></script>
         <script src="js/widget-grouping.js"></script>
         
-        <script src="js/main.js"></script>
         <!-- /cut:tablesorter -->
         <!-- cut:xeditable -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap-editable.css" />
@@ -41,7 +40,7 @@
         <script>
 $(document).ready(function() {
     //toggle `popup` / `inline` mode
-    $.fn.editable.defaults.mode = 'inline';     
+    $.fn.editable.defaults.mode = 'popup';     
     
     $('.editable').editable({
         emptytext: "Tom",
@@ -85,13 +84,10 @@ $(document).ready(function() {
         var url = location.href.split('/');
         url.pop();
         var what = url.pop();
-        var strs = {};
-        strs['title'] = '{title}';
-        strs['user'] = '{user}';
         
         bootbox.dialog({
-            message: "{Are you sure you want to delete this} "+strs[what]+"?",
-            title: "{Delete} "+strs[what],
+            message: "{Are you sure you want to delete this?}",
+            title: "{Delete}",
             buttons: {
                 success: {
                     label: "{No}",
@@ -124,13 +120,13 @@ $(document).ready(function() {
             language: 'sv'
         }
     });
-    
+
 });
         
         </script>
         <!-- /cut:xeditable -->
-        
         <!-- paste:extrahead -->
+        <script src="js/main.js"></script>
         <link rel="stylesheet" type="text/css" href="css/app.css" />
     </head>
   
@@ -153,7 +149,7 @@ $(document).ready(function() {
                     
                     <form class="navbar-form navbar-right" role="search" action="search" method="get" >
                         <div class="form-group">
-                            <input type="text"  name="search" id="search"  class="form-control" placeholder="Search">
+                            <input type="text"  name="search" id="search"  class="form-control" placeholder="{Search}">
                         </div>
                         <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
                     </form>

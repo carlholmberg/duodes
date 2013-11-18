@@ -75,12 +75,6 @@ class User extends ViewController {
         
         if ($user) {
             if (self::verify($data['password'], $user->password, $user->salt)) {
-                // TMP
-                if ($user->email == 'carl.holmberg@kunskapsgymnasiet.se') {
-                    $user->level = 4;
-                    \R::store($user);
-                }
-                // --TMP
                 return $this->info($user);
             }
             return false;
@@ -235,20 +229,34 @@ class User extends ViewController {
                 $user->import(array($field => $value));
                 \R::store($user);
             }
+            if (in_array($field, array('lastname', 'firstname', 'class'))) {
+                $barcode = \R::relatedOne($user, 'barcode');
+			    if ($barcode) {
+			        $barcode->text = self::formatName($user);
+			        \R::store($barcode);
+			    }
+            
+            }
         }
     }
     
     function newBarcode($user) {
         $barcode = \R::dispense('barcode');
-        $barcode->barcode = $user->barcode;
-		$barcode->text = $this->formatName($user);
+        if (!$user->barcode) {
+            $barcode->barcode = 'U.'.strtoupper(base_convert($user->id, 10, 16)); 
+	    	$user->barcode = $barcode->barcode;
+		    \R::store($user);
+		} else {
+		    $barcode->barcode = $user->barcode;
+		}
+		$barcode->text = self::formatName($user);
 		$barcode->type = 'user';
 		$barcode->b_id = $user->id;
 		\R::store($barcode);
 		\R::associate($barcode, $user);
     }
     
-    function formatName($user) {
+    static function formatName($user) {
         $name = $user->lastname.', '.$user->firstname.' ('.$user->class.')';
         return $name;
     }

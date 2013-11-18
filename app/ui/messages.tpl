@@ -33,3 +33,11 @@
             <p><span class="glyphicon glyphicon-exclamation-sign"></span> Försökte återlämna <strong>#title#</strong> (#bc#) som inte är utlånad</p>
         </div>
         <!-- /cut:circ_r_in -->
+        
+        <!-- cut:copy_del -->
+        <div class="container alert alert-danger fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <p><span class="glyphicon glyphicon-exclamation-sign"></span> Raderade kopia</p>
+        </div>
+        <!-- /cut:copy_del -->
+        

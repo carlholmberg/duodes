@@ -131,23 +131,39 @@ function initUsers() {
 
 
 $(document).ready(function() {
-
-  $.extend($.tablesorter.themes.bootstrap, {
-    table      : 'table table-bordered',
-    header     : 'bootstrap-header', // give the header a gradient background
-    footerRow  : '',
-    footerCells: '',
-    icons      : '', // add "icon-white" to make them white; this icon class is added to the <i> in the header
-    sortNone   : 'bootstrap-icon-unsorted',
-    sortAsc    : 'icon-chevron-up',
-    sortDesc   : 'icon-chevron-down',
-    active     : '', // applied when column is sorted
-    filterRow  : '', // filter row class
-  });
-  
+    if($.tablesorter) {
+        $.extend($.tablesorter.themes.bootstrap, {
+            table      : 'table table-bordered',
+            header     : 'bootstrap-header', // give the header a gradient background
+            footerRow  : '',
+            footerCells: '',
+            icons      : '', // add "icon-white" to make them white; this icon class is added to the <i> in the header
+            sortNone   : 'bootstrap-icon-unsorted',
+            sortAsc    : 'icon-chevron-up',
+            sortDesc   : 'icon-chevron-down',
+            active     : '', // applied when column is sorted
+            filterRow  : '', // filter row class
+        });
+    }
+    
     if ($('#collection').length) {
         $.get("ajax/collections-opt", function(html) {
             $("#collection").append(html);
+        });
+    }
+    
+    if ($('.class_list').length) {
+        $.get("ajax/class", function(html) {
+            $(".class_list").append(html);
+        });
+    }
+    
+    if ($('#fixedcoll').length) {
+        $.get("ajax/collections-fixed", function(html) {
+            $("#fixedcoll").append(html);
+        });
+        $("#fixedcoll").on('change', function(ev) {
+            $.post("ajax/setcollfixed", { val: $("#fixedcoll").val() });
         });
     }
     
@@ -157,5 +173,45 @@ $(document).ready(function() {
         endDate: "today",
         language: "sv"
     });
+    
+    if($('.action_delete').length) {
+        $('.action_delete').on('click', function(ev) {
+            var todelete = $(this);
+            ev.preventDefault();
+            bootbox.dialog({
+                message: "Är du säker på att du vill radera?",
+                title: "Radera",
+                buttons: {
+                    success: {
+                        label: "Nej",
+                        className: "btn-default"
+                    },
+                    danger: {
+                        label: "Ja",
+                        className: "btn-danger",
+                        callback: function() {
+                            $.ajax({
+                                type: "DELETE",
+                                url: todelete.attr('href'),
+                                success: function(href) {
+                                    location.reload();  
+                                }
+                            });
+                        }
+                    },
+                }
+            });
+            
+        });
+    }
+    
+    if($('.action_return').length) {
+        $('.action_return').on('click', function(ev) {
+            ev.preventDefault();
+            $.post($(this).attr('href'), {action: 'return'}, function(href) {
+                location.reload();  
+            });
+        });
+    }
 
 });

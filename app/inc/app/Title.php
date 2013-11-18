@@ -41,6 +41,9 @@ class Title extends \app\ViewController {
                 break;
             
             case 'all':
+                if ($app->get('GET.collection')) {
+                    $app->reroute('/title/c/'.$app->get('GET.collection'));
+                }
                 $this->menu = true;
                 $this->footer = true;
                 $this->addPiece('main', 'tablesorter', 'extrahead');
@@ -176,7 +179,7 @@ class Title extends \app\ViewController {
 			$copy->title = $title;
 			$copy->collection = $coll;
 			$c_id = \R::store($copy);
-			$copy->barcode = strtoupper(base_convert($title->id.$c_id, 10, 36)); 
+			$copy->barcode = strtoupper(base_convert($title->id, 10, 36).'.'.base_convert($c_id, 10, 36)); 
 		
 			$barcodes[$i]->barcode = $copy->barcode;
 			$barcodes[$i]->text = $title->title;
@@ -192,13 +195,9 @@ class Title extends \app\ViewController {
 		\R::store($title);
     }
     
-    static function getIDs() {
-        if (isset($_GET['collection'])) {
-            if ($_GET['collection'] == 'all') {
-                $app = \Base::instance();
-                $app->reroute('/title/all');
-            }
-            $rows = \R::getCol('SELECT DISTINCT title_id FROM copy WHERE collection_id = ?', array($_GET['collection']));
+    static function getIDs($coll=false) {
+        if ($coll) {
+            $rows = \R::getCol('SELECT DISTINCT title_id FROM copy WHERE collection_id = ?', array($coll));
 		} else {    
             $rows = \R::getCol('SELECT id FROM title ORDER BY author, title');
 		}
@@ -215,8 +214,8 @@ class Title extends \app\ViewController {
 	    \R::store($title);
 	}
     
-    static function getTitles($from=0, $to=false) {
-        $ids = self::getIDs();
+    static function getTitles($from=0, $to=false, $coll=false) {
+        $ids = self::getIDs($coll);
         $titles = array();
         $length = ($to !== false)? $to-$from : NULL;
         $ids = array_slice($ids, $from, $length);
@@ -236,7 +235,7 @@ class Title extends \app\ViewController {
         $title = \R::load('title', $params['id']);
         if ($title) {
             $data = serialize($title->export());
-            new \app\Log('delete', 'Deleted title "'. $title->title.'"', $data);
+            new Log('delete', 'Deleted title "'. $title->title.'"', $data);
             \R::trashAll($title->ownCopy);
             \R::trash($title);
         }
@@ -264,6 +263,38 @@ class Title extends \app\ViewController {
             unset($header['borrowed']);
         }
         return $header;
+    }
+    
+    function collection($app, $params) {
+        $id = $params['id'];
+        if ($id == 'all') $app->reroute('/title/all');
+        $this->menu = true;
+        $this->footer = true;
+        $this->addPiece('main', 'tablesorter', 'extrahead');
+        $rows = \R::getCell('SELECT COUNT(DISTINCT title_id) FROM copy WHERE collection_id = ?', array($id));
+        $collection = \R::load('collection', $id);
+        $this->slots['pagetitle'] = '{Titles} {in} "'.$collection->name.'"';
+        $this->slots['ids'] = $rows;
+        $this->setPage('titles');
+
+        $header = self::getHeader($this->lvl);
+        $titles = Title::getTitles(0, 40, $id);
+
+        $this->buildTable($header, $titles);
+    }        
+    
+    function titles_ajax($app, $params) {
+        $id = $params['id'];
+        $from = (int)$params['from'];
+        $to = (int)$params['to'];
+        
+        $header = Title::getHeader($this->lvl);
+        $titles = Title::getTitles($from, $to, $id);
+        
+        $tpl = $this->buildTable($header, $titles, true);
+        
+        $this->tpl = false;
+        echo $tpl;
     }
     
 }

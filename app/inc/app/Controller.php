@@ -9,8 +9,13 @@
  *   
  */
 namespace app;
+
+// Include RedbeanPHP
 require_once('app/lib/rb.php');
 \R::setup('sqlite:data/db.db');
+
+// Include Stamp template system
+require_once('app/lib/StampTE.php');
 
 function __($str, $values=false) {
     
@@ -66,6 +71,22 @@ class Controller
             }
         }
     }
+    
+    function loadTpl($tpl) {
+        $file = $this->app->get('UI').$tpl.'.tpl';
+        if (file_exists($file)) {
+            return new \StampTE(file_get_contents($file));
+        }
+        return false;
+    }
+    
+    function addMessage($tpl, $data=array()) {
+        $msgs = $this->loadTpl('messages');
+        $tpl = $msgs->get($tpl);
+        $tpl->injectAll($data);
+        $this->app->set('SESSION.msg', $tpl);
+    }
+    
     
     function hasLevel($lvl=0) {
         return ($this->lvl >= $lvl);    

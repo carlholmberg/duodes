@@ -35,7 +35,21 @@ class Ajax extends \app\Controller {
                 }
 
                 break;
+            
+            case 'collections-fixed':
+                $coll = \R::findOne('collection', ' type = "fixed" ');
+                $data = unserialize($coll->value);
                 
+                foreach($data as $val) {
+                    if ($app->get('SESSION.FixedColl') == $val['ts']) {
+                        printf("<option selected='selected' value=\"%s\">%s (%s)</option>", $val['ts'], $val['name'], $val['ts']);
+                    } else {
+                        printf("<option value=\"%s\">%s (%s)</option>", $val['ts'], $val['name'], $val['ts']);
+                    }
+                }
+
+                break;
+            
             case 'users':
                 $users = User::getUsers();
                 $out = array();
@@ -45,10 +59,23 @@ class Ajax extends \app\Controller {
                 }
                 echo "[\n".implode(",\n", $out)."\n]";
                 break;
+                
+            case 'class':
+                $rows = \R::getCol('SELECT DISTINCT class FROM user ORDER BY class');
+                foreach($rows as $row) {
+                    printf("<option value=\"%s\">%s</option>", $row, $row);
+                }
+                break;
         }
     }
     function post($app, $params) {
         
+        switch ($params['what']) {
+        
+            case 'setcollfixed':
+                $app->set('SESSION.FixedColl', $app->get('POST.val'));
+                break;
+        }
     }
     function put() {}
     function delete() {}

@@ -19,7 +19,11 @@
 	        
 	        <!-- cut:dcell -->
 	        <td><p id="#field#" data-type="dateui" data-pk="#id#" data-original-title="#name#" data-url="#href#/#id#" class="editable editable-click">#value#</p></td>
-            <!-- /cut:dcell -->	     
+            <!-- /cut:dcell -->
+            
+            <!-- cut:icell -->
+            <td><a href="#href#/#id#" class="action_#type#" title="#name#"><span class="glyphicon glyphicon-#value#"></span></a></td>
+            <!-- /cut:icell -->
             
 	        <!-- paste:cell -->
         </tr>

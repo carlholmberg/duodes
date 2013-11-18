@@ -10,8 +10,6 @@
  */
 namespace app;
 
-// Include Stamp template system
-require_once('app/lib/StampTE.php');
 
 class ViewController extends \app\Controller
 {
@@ -42,21 +40,6 @@ class ViewController extends \app\Controller
         }   
     }
     
-    function loadTpl($tpl) {
-        $file = $this->app->get('UI').$tpl.'.tpl';
-        if (file_exists($file)) {
-            return new \StampTE(file_get_contents($file));
-        }
-        return false;
-    }
-    
-    function addMessage($tpl, $data=array()) {
-        $msgs = $this->loadTpl('messages');
-        $tpl = $msgs->get($tpl);
-        $tpl->injectAll($data);
-        $this->app->set('SESSION.msg', $tpl);
-    }
-    
     
     function buildCopyTable($header, $data) {
     
@@ -70,6 +53,27 @@ class ViewController extends \app\Controller
             $row = $tpl->get('row');
             $id = $item['id'];
             foreach(array_keys($header) as $cell) {
+                if (!isset($item[$cell])) $item[$cell] = '';
+                
+                if (isset($header[$cell]['tid'])) {
+                    $nid = (isset($item['tid']))? $item['tid'] : $id;
+                } else if (isset($header[$cell]['tid'])) {
+                    $nid = (isset($item['uid']))? $item['uid'] : $id;
+                } else {
+                    $nid = $id;
+                }
+                
+                if (isset($header[$cell]['row-icon'])) {
+                    $row->glue('cell', $row->get('icell')->injectAll(
+                        array('href' => $header[$cell]['href'],
+                              'id' => $nid,
+                              'type' => $cell,
+                              'value' => $header[$cell]['row-icon'],
+                              'name' => $item[$cell])));
+                    continue;
+                
+                }
+                
                 if ($cell == 'borrowed_by' && $item[$cell] !== '') {
                     $nid = (isset($header[$cell]['uid']))? $item['uid'] : $id;
                     if (isset($header[$cell]['href']) && $item[$cell] !== '-') {
@@ -137,6 +141,18 @@ class ViewController extends \app\Controller
                               'name' => $header[$cell]['name'])));
                     continue;
                 }
+                
+                if (isset($header[$cell]['row-icon'])) {
+                    $row->glue('cell', $row->get('icell')->injectAll(
+                        array('href' => $header[$cell]['href'],
+                              'id' => $nid,
+                              'type' => $cell,
+                              'value' => $header[$cell]['row-icon'],
+                              'name' => $item[$cell])));
+                    continue;
+                
+                }
+                
                 if ($item[$cell] == '' && isset($header[$cell]['href']) && !isset($header[$cell]['id'])) $item[$cell] = 'Tom';
                 if ($item[$cell] == '') $item[$cell] = '-';
                 
@@ -204,6 +220,12 @@ class ViewController extends \app\Controller
                             'link' => 'login',
                             'icon' => 'star',
                             'level' => 0);
+        } else if ($this->lvl == 2) {
+            $menudata[1] = $menudata[1]['submenu'][1];
+            $menudata[] = array('link' => 'logout',
+                                'title' => '{Log out}',
+                                'icon'=> 'lock',
+                                'level' => 0);
         } else {
             $menudata[] = array('title' => $this->slots['user'],
                             'icon' => 'star',

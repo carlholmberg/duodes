@@ -1,5 +1,5 @@
 <div class="container">
-    <h1>{Titles}</h1>
+    <h1>#pagetitle#</h1>
     <form class="form-inline well" role="form" action="title/all" method="get">
         <div class="form-group">
             <label for="collection" class="control-label">Visa:</label>

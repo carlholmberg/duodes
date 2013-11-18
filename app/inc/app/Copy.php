@@ -4,7 +4,7 @@
  * Copy controller
  * 
  * @author Carl Holmberg
- * @copyright Copyright 2012
+ * @copyright Copyright 2013
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */ 
@@ -19,11 +19,31 @@
 
 namespace app;
 
-class Copy extends \app\Controller {
+class Copy extends Controller {
     function get($app, $params) {
         echo 'Copy (GET): name '.$params['id'];
     }
+    
     function post($app, $params) {
+        if ($app->get('POST.action')) {
+            switch ($app->get('POST.action')) {
+                case 'return':
+                    $copy = \R::load('copy', $params['id']);
+                    if ($copy) {
+                        $collection = ($copy->collection)? $copy->collection->name : '';
+                        if ($copy->user) {
+                            $user = $copy->user;
+                            $this->addMessage('circ_r_ok', array(
+                                'fname'=>$user->firstname, 'lname'=>$user->lastname,
+                                'coll'=>$collection, 'title'=>$copy->title->title,
+                            'bc'=>$copy->barcode));
+                            self::returnCopy($copy);
+                        }
+                    
+                    }
+                    return;
+            }
+        }
         $name = $app->get('POST.name');
         $value = $app->get('POST.value');
         $id = $app->get('POST.pk');
@@ -38,10 +58,7 @@ class Copy extends \app\Controller {
                     Title::updateBorrowed($copy->title);
                     \R::store($user);
                 } else {
-                    unset($copy->user);
-                    unset($copy->return_date);
-                    Title::updateBorrowed($copy->title);
-                    \R::store($copy);
+                    self::returnCopy($copy);
                 }
                 
                 break;
@@ -78,6 +95,13 @@ class Copy extends \app\Controller {
 		\R::associate($barcode, $copy);
     }
     
+    static function returnCopy($copy) {
+        unset($copy->user);
+        unset($copy->return_date);
+        Title::updateBorrowed($copy->title);
+        \R::store($copy);
+    }
+    
     
     static function getCopies($for, $lvl) {
         $copies = array();
@@ -99,7 +123,8 @@ class Copy extends \app\Controller {
                 $cop['bc_print'] = \R::relatedOne($c, 'barcode')? 1 : 0;
             }
             if ($lvl > 2) {
-                $cop['return'] = '<span class="glyphicon glyhpicon-return"></span>';
+                $cop['return'] = '{Return}';
+                $cop['delete'] = '{Delete}';
             }
             
             $copies[] = $cop;
@@ -108,7 +133,17 @@ class Copy extends \app\Controller {
     }
     
     function put() {}
-    function delete() {}
+    function delete($app, $params) {
+        $copy = \R::load('copy', $params['id']);
+        if ($copy) {
+            $data = serialize($copy->export());
+            new Log('delete', 'Deleted copy "'. $copy->barcode.'" for '.$copy->title->title, $data);
+            $this->addMessage('copy_del');
+            \R::trash($copy);
+        }
+    
+    
+    }
     
     static function getHeader($lvl, $for='title') {
         if ($for == 'title') {
@@ -122,12 +157,15 @@ class Copy extends \app\Controller {
                 'return_date' => array(
                     'class' => 'group-false', 'name' => '{Return date}'),
                 'bc_print' => array(
-                    'class'=>'sorter-false', 'name'=>'', 'icon'=>'barcode')
+                    'class'=>'sorter-false', 'name'=>'', 'icon'=>'barcode'),
+                'delete' => array(
+                    'class' => 'group-false filter-false sorter-false', 'name' => '', 'row-icon' => 'trash', 'href' => 'copy'),
             );
        
             if ($lvl < 2) {
                 unset($header['borrowed_by']);
                 unset($header['bc_print']);
+                unset($header['delete']);
             }
         } else if ($for == 'user') {
             $header = array(
@@ -141,7 +179,7 @@ class Copy extends \app\Controller {
                 'return_date' => array(
                     'class' => 'group-false', 'name' => '{Return date}'),
                 'return' => array(
-                    'class' => 'group-false filter-false sorter-false', 'name' => '', 'icon' => 'repeat', 'href' => 'copy'),
+                    'class' => 'group-false filter-false sorter-false', 'name' => '', 'row-icon' => 'repeat', 'href' => 'copy'),
             );
             if ($lvl < 3) {
                 unset($header['return']);

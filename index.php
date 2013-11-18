@@ -47,7 +47,7 @@ $menu = array(
           'level' => 4),
     array('link' => 'report',
           'title' => 'Reports',
-          'icon' => '',
+          'icon' => 'file',
           'level' => 3),
           
  /*   array('link' => 'batch',

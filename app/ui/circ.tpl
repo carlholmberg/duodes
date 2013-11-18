@@ -19,7 +19,13 @@
 	                <input type="text" id="bc1" class="span2 centered" name="bc1" />
 	                <input type="text" id="bc2" class="span2 centered" name="bc2" />
 	                <button type="submit" class="btn btn-primary">{Borrow}</button>
-	            </div>    
+	            </div>   
+	            <!-- cut:fixedcoll -->
+	            <p>Låna kurslitteratur för period:
+                <select id="fixedcoll" name="fixedcoll"></select></p>
+                <!-- /cut:fixedcoll -->
+                <!-- paste:fixedcoll -->
+                 
             </div>
         </div>
     </form>
