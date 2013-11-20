@@ -12,7 +12,7 @@ function displayTitles(ids) {
             });
             $(".pagesize").append('<option value="'+ids+'">'+ids+'</option>');
             
-            update('titles', ids, 40, 80);
+            update('titles', ids, 40, 160);
         });
     }
 }
@@ -31,7 +31,7 @@ function displayUsers(ids) {
             });
             $(".pagesize").append('<option value="'+ids+'">Alla</option>');
             
-            update('users', ids, 40, 80);
+            update('users', ids, 40, 160);
         });
     }
 }
@@ -50,7 +50,7 @@ function update(what, ids, from, to) {
         $("table tbody").append(html);
         var resort = true;
         $("table").trigger("update", [resort]);
-        update(what, ids, from+40, to+40);
+        update(what, ids, from+120, to+120);
     });
 }
 

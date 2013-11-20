@@ -65,10 +65,15 @@ class Title extends \app\ViewController {
                 
                 $title = \R::load('title', $id);
                 if ($title) {
-                    
+                    if ($this->hasLevel(4)) {
+                        $this->setPage('title-edit');
+                        $this->addPiece('main', 'xeditable', 'extrahead');
+                    } else {
+                        $this->setPage('title');
+                    }
+
                     $this->slots['id'] = $id;
-                    $this->setPage('title');
-                    $slots = array('title' => '', 'author' => '', 'isbn' => '', 'desc' => '', 'keywords' => '', 'publisher' => '',  'date' => '', 'code' => '', 'url' => '', 'registered' => date('Y-m'), 'total' => "0", 'borrowed' => "0");
+                    $slots = array('title' => '', 'author' => '', 'isbn' => '', 'desc' => '', 'keywords' => '', 'publisher' => '',  'date' => '', 'code' => '', 'url' => '', 'registered' => date('Y-m'), 'total' => '0', 'borrowed' => '0', 'lang' => '');
                     $this->addSlots($slots);
                     
                     if ($app->get('SESSION.newtitle')) {
@@ -91,11 +96,6 @@ class Title extends \app\ViewController {
                             if($this->hasLevel(4)) $this->buildCopyTable($header, $copies);
                             else $this->buildTable($header, $copies);
                         }
-                    }
-                    if ($this->hasLevel(4)) {
-                        $this->addPiece('main', 'xeditable', 'extrahead');
-                        $this->addPiece('page', 'editing', 'editing');
-                        $this->addPiece('page', 'isbnedit', 'isbnedit');
                     }
                     
                 } else {

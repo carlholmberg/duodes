@@ -65,6 +65,10 @@ return array(
 	'Pick' => 'Välj',
 	'Status' => 'Status',
 	'Label lists' => 'Etikettlistor',
+	'Email address' => 'Epostadress',
+	'Password' => 'Lösenord',
+	'Sign in' => 'Logga in',
+	'User name' => 'Användarnamn',
 	
 	'User id' => 'Personnummer',
 	'Subject' => 'Ämne',

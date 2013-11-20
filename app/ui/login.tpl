@@ -4,34 +4,31 @@
         <div class="panel-heading">
             <h3 class="panel-title">Logga in</h3>
         </div>
-        <ul class="nav nav-tabs">
-            <li><a href="#openid" data-toggle="tab">OpenID</a></li>
-            <li class="active"><a href="#local" data-toggle="tab">Lokalt</a></li>
-        </ul>
-        <div id="myTabContent" class="tab-content">
-            <div class="tab-pane fade" id="openid">
-                <div class="panel-body">
-                    <label>Använd</label><br><a href="login/google" title="Google-account" class="btn btn-default">Google-konto</a></div>
+        <div class="panel-body">
+            <fieldset>
+                <h4>OpenID</h4>
+                <p><a href="login/google" title="Google-account" class="btn btn-default">Google-konto</a></p>
+            </fieldset>
+        <form class="form-inline" role="form" action="login/local" method="post">
+            <fieldset>
+                <h4>Lokalt</h4><p>Använd i första hand OpenID ovan</p>
+                <div class="form-group">
+                    <label for="email">{Email address}/{User name}</label>
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter email">
                 </div>
-                <div class="tab-pane fade active in" id="local">
-                    <form class="form-inline" role="form" action="login/local" method="post">
-                        <div class="panel-body">
-                            <h4>Om du inte aktiverat ditt konto måste du först logga in med <a href="#openid" data-toggle="tab">OpenID</a>.</h4>
-                            <div class="form-group">
-                                <label for="email">Email address</label>
-                                <input type="email" class="form-control" name="email" id="email" placeholder="Enter email">
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" name="password" id="password" placeholder="Password">
-                            </div>
-                        </div>
-                        <div class="panel-footer">
-                            <button type="submit" class="btn btn-default">Sign in</button>
-                        </div>
-                    </form>
+                <div class="form-group">
+                    <label for="password">{Password}</label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Password">
                 </div>
-            </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default">{Sign in}</button>
+                </div>
+                
+            </fieldset>
         </div>
+        <div class="panel-footer">
+            
+        </div>
+        </form>
     </div>
 </div>

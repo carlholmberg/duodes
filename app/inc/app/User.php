@@ -4,7 +4,7 @@
  * User controller
  * 
  * @author Carl Holmberg
- * @copyright Copyright 2012
+ * @copyright Copyright 2013
  * @license http://www.gnu.org/licenses/lgpl.txt
  *   
  */

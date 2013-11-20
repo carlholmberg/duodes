@@ -39,3 +39,13 @@ tr:not(.filtered):nth-child(odd) {
 .navbar-wrapper .glyphicon {
     font-size: 18px;
 }
+
+h5 + p {
+    margin-left: 1em;
+}
+
+fieldset {
+    border: 1px solid #ddd;
+    padding: 1em;
+    margin: 1em;
+}
