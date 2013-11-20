@@ -78,7 +78,7 @@ switch($step) {
         break;
     
     case 'titles':
-        $ids = \R::getCol('SELECT id FROM title');
+        $ids = R::getCol('SELECT id FROM title');
         foreach ($ids as $id) {
             $title = R::load('title', $id);
             $meta = R::load('titlemeta', $title->titlemeta_id);
@@ -92,6 +92,21 @@ switch($step) {
         }
         echo 'Titles complete';
         break;
+        
+    case 'borrowed':
+        $ids = R::getCol('SELECT id FROM title');
+        foreach ($ids as $id) {
+            $title = R::load('title', $id);
+            $borrowed = 0;
+	        foreach($title->ownCopy as $copy) {
+	            if ($copy->user) $borrowed += 1;
+	        }
+	        $title->borrowed = $borrowed;
+	        R::store($title);
+        }
+        echo 'Borrowed complete';
+        break;
+
 
     default:
         echo '<a href="fix.php?do=coll">Step 1</a>';

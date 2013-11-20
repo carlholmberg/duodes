@@ -46,7 +46,7 @@ $menu = array(
           'icon' => 'barcode',
           'level' => 4),
     array('link' => 'report',
-          'title' => 'Reports',
+          'title' => '{Reports}',
           'icon' => 'file',
           'level' => 3),
           

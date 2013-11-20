@@ -211,6 +211,7 @@ class Title extends \app\ViewController {
 	            $borrowed += 1;
 	        }
 	    }
+	    $title->borrowed = $borrowed;
 	    \R::store($title);
 	}
     
@@ -259,9 +260,6 @@ class Title extends \app\ViewController {
                 'class'=>'', 'placeholder'=>'', 'name'=>'{Total}'),
             'borrowed'=>array(
                 'class'=>'', 'placeholder'=>'', 'name'=>'{Borrowed}'));
-        if ($lvl < 2) {
-            unset($header['borrowed']);
-        }
         return $header;
     }
     

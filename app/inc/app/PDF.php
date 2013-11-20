@@ -1,5 +1,4 @@
 <?php
-
 /**
  * PDF controller
  * 
@@ -28,46 +27,9 @@ class PDF extends Controller {
         }
         if (!$all) $app->reroute('/barcode');
         
-        if (count($all) % 24 !== 0) {
-	        $r = count($all) % 24;
-	        $fill = array_fill(0, 24-$r, array('barcode' => '', 'text' => ''));
-	        $all = array_merge($all, $fill);
-        }
-        
-        $pages = array_chunk($all, 24);
+        $this->labelsheets($all);
+    }
 
-        $html = '<body>';
-
-        foreach ($pages as $page) {
-	        $html .= '
-<table cellpadding="0" cellspacing="0">
-';
-	        $rows = array_chunk($page, 3);
-	        foreach ($rows as $row) {
-		        $html .= '<tr>';
-		        foreach ($row as $bc) {
-			        if (strlen($bc['text']) > 40) {
-				        $bc['text'] = substr($bc['text'], 0, 40).'...';
-		        	}
-			        if ($bc['barcode'] == '') {
-				        $html .= '<td class="label">&nbsp;</td>';
-			        } else {
-				        $html .= '<td class="label"><barcode code="'.$bc['barcode'].'" type="C39" class="barcode" height="0.8" width="0.9"/><p><strong>'.$bc['barcode'].'</strong><br />'.$bc['text'].'</p></td>';
-			        }
-		        }
-		        $html .= '</tr>';
-	        }
-	        $html .= '</table>';
-        }
-        $html .= '</body>';
-        
-        $stylesheet = '
-table { width: 100%; border: 0; }
-td { text-align: center; margin: 0; width: 70mm; height: 37.125 mm; padding: 10mm; font-size: 8pt; }
-strong { font-size: 9pt; }
-';
-    self::output($stylesheet, $html);
-}
 
     function userlabels($app, $params) {
         $value = $app->get('POST.userlables');
@@ -80,92 +42,81 @@ strong { font-size: 9pt; }
         foreach ($users as $user) {
 		    $arr[] = array('barcode' => $user->barcode, 'text' => User::formatName($user));
 		}
-        if (count($arr) % 24 !== 0) {
-	        $r = count($arr) % 24;
-	        $fill = array_fill(0, 24-$r, array('barcode' => '', 'text' => ''));
-	        $arr = array_merge($arr, $fill);
-        }
-
-        $pages = array_chunk($arr, 24);
-
-        $html = '<body>';
-
-        foreach ($pages as $page) {
-	        $html .= '<table cellpadding="0" cellspacing="0">';
-	        $rows = array_chunk($page, 3);
-	        foreach ($rows as $row) {
-		        $html .= '<tr>';
-		        foreach ($row as $bc) {
-			        if ($bc['barcode'] != '') {
-				        $html .= '<td><barcode code="'.$bc['barcode'].'" type="C39" class="barcode" /><br /><strong>'.$bc['barcode'].'</strong> - '.$bc['text'].'</td>';
-			        } else {
-				        $html .= '<td>&nbsp;</td>';
-			        }
-		        }
-		        $html .= '</tr>';
-	        }
-	        $html .= '</table>';
-        }
-        $html .= '</body>';
-
-        $stylesheet = '
-table { width: 100%; border: 0; }
-td { width: 70mm; height: 37.125 mm; padding: 10mm; font-size: 8pt; text-align: center; overflow:hidden;}
-strong { font-size: 9pt; }';
-        self::output($stylesheet, $html);  
+        $this->labelsheets($arr);
     }
     
+
     function userlist($app, $params) {
         $value = $app->get('POST.userlist');
         if ($value == 'all') {
-            $users = \R::findAll('user', ' ORDER BY class ');
+            $users = \R::findAll('user', ' ORDER BY class,lastname,firstname ');
         } else {
-            $users = \R::findAll('user', ' class = ? ORDER BY class ', array($value));
+            $users = \R::findAll('user', ' class = ? ORDER BY class,lastname,firstname ', array($value));
         }
-        $arr = array();
+
+        $html = '';
+        $curclass = '';
+        
         foreach ($users as $user) {
-		    $arr[] = array('barcode' => $user->barcode, 'text' => User::formatName($user));
-		}
+            if ($user->class !== $curclass) {
+                if ($curclass !== '') $html .= '</div>';
+                $curclass = $user->class;
+                $html .= '<div><h1>Basgrupp '.$curclass.'</h1>';
+            }
+            $barcode = $user->barcode;
+            $text = User::formatName($user);
+            $html .= '<p><barcode code="'.$barcode.'" type="C39" class="barcode" height="0.8" width="0.9"/><br /><strong>'.$barcode.'</strong> - '.$text.'</p><p></p>';
+        }
+        
+        $html .= '</div>';
+        
+        $stylesheet = 'h1 { margin: 30px; } p { text-align: center; }';
+        
+        self::output($stylesheet, $html, true); 
+    }
+
+    
+    function labelsheets($arr) {
         if (count($arr) % 24 !== 0) {
 	        $r = count($arr) % 24;
 	        $fill = array_fill(0, 24-$r, array('barcode' => '', 'text' => ''));
 	        $arr = array_merge($arr, $fill);
         }
 
-        $pages = array_chunk($arr, 24);
-
-        $html = '<body>';
-
-        foreach ($pages as $page) {
-	        $html .= '<table cellpadding="0" cellspacing="0">';
+        $html = '';
+                        
+        foreach (array_chunk($arr, 24) as $page) {
+            $table = $this->loadTpl('labels');
 	        $rows = array_chunk($page, 3);
 	        foreach ($rows as $row) {
-		        $html .= '<tr>';
+	            $rowtpl = $table->get('row');
+
 		        foreach ($row as $bc) {
-			        if ($bc['barcode'] != '') {
-				        $html .= '<td><barcode code="'.$bc['barcode'].'" type="C39" class="barcode" /><br /><strong>'.$bc['barcode'].'</strong> - '.$bc['text'].'</td>';
+			        if (strlen($bc['text']) > 40) {
+				        $bc['text'] = substr($bc['text'], 0, 40).'...';
+		        	}
+			        if ($bc['barcode'] == '') {
+			            $rowtpl->glue('label', $table->get('row.elabel'));
 			        } else {
-				        $html .= '<td>&nbsp;</td>';
+			            $rowtpl->glue('label', $table->get('row.label')->injectAll($bc));
 			        }
 		        }
-		        $html .= '</tr>';
+		        $table->glue('row', $rowtpl);
 	        }
-	        $html .= '</table>';
+	        $html .= $table;
         }
-        $html .= '</body>';
 
-        $stylesheet = '
-table { width: 100%; border: 0; }
-td { width: 70mm; height: 37.125 mm; padding: 10mm; font-size: 8pt; text-align: center; overflow:hidden;}
-strong { font-size: 9pt; }';
-        self::output($stylesheet, $html);;
-    
+        $stylesheet = file_get_contents($this->app->get('UI').'labels-css.tpl');
+        self::output($stylesheet, $html);  
     }
-
-
-    static function output($css, $html) {
-        $mpdf=new \mPDF('c','A4','','',0,0,0,0,0,0); 
-
+    
+    static function output($css, $html, $margin=false) {
+        if ($margin) {
+            $mpdf=new \mPDF('c','A4','',''); 
+        } else {
+            $mpdf=new \mPDF('c','A4','','',0,0,0,0,0,0); 
+        }
+        
         $mpdf->SetDisplayMode('fullpage');
 
         $mpdf->SetTitle('Streckkoder');
