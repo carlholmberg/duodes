@@ -132,7 +132,6 @@ class Copy extends Controller {
         return $copies;
     }
     
-    function put() {}
     function delete($app, $params) {
         $copy = \R::load('copy', $params['id']);
         if ($copy) {

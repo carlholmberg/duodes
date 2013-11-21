@@ -273,7 +273,7 @@ class User extends ViewController {
 		$barcode = \R::relatedOne($user, 'barcode');
 		if ($barcode) \R::trash($barcode);
 			        
-        new \app\Log('delete', 'Deleted user "'. $user->email.'"', $data);
+        new Log('delete', 'Deleted user "'. $user->email.'"', $data);
 
         \R::trash($user);
 

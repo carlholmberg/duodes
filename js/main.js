@@ -191,8 +191,8 @@ $(document).ready(function() {
                         className: "btn-danger",
                         callback: function() {
                             $.ajax({
-                                type: "DELETE",
-                                url: todelete.attr('href'),
+                                type: "POST",
+                                url: todelete.attr('href')+"/delete",
                                 success: function(href) {
                                     location.reload();  
                                 }

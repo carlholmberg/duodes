@@ -98,8 +98,8 @@ $(document).ready(function() {
                     className: "btn-danger",
                     callback: function() {
                         $.ajax({
-                            url: location.href,
-                            type: 'DELETE',
+                            url: location.href+"/delete",
+                            type: 'POST',
                             success: function(result) {
                                 location.href = result;
                             }
@@ -126,7 +126,7 @@ $(document).ready(function() {
         </script>
         <!-- /cut:xeditable -->
         <!-- paste:extrahead -->
-        <script src="js/main.js"></script>
+        <script src="js/main.js?v=1"></script>
         <link rel="stylesheet" type="text/css" href="css/app.css" />
     </head>
   
