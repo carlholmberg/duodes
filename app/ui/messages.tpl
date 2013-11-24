@@ -5,6 +5,14 @@
         </div>
         <!-- /cut:circ_b_ok -->
         
+        <!-- cut:circ_b_wrong -->
+        <div class="container alert alert-danger fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <p><span class="glyphicon glyphicon-exclamation-sign"></span> Felaktig streckkod</p>
+        </div>
+        <!-- /cut:circ_b_wrong -->
+        
+        
         <!-- cut:circ_b_out -->
         <div class="container alert alert-danger fade in">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -41,3 +49,10 @@
         </div>
         <!-- /cut:copy_del -->
         
+        
+        <!-- cut:report_none -->
+        <div class="container alert alert-danger fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <p><span class="glyphicon glyphicon-exclamation-sign"></span> Inga utlån matchade kriterierna</p>
+        </div>
+        <!-- /cut:report_none -->

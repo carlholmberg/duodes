@@ -66,6 +66,13 @@ class Ajax extends \app\Controller {
                     printf("<option value=\"%s\">%s</option>", $row, $row);
                 }
                 break;
+                
+            case 'codes':
+                $rows = \R::getCol('SELECT DISTINCT code FROM title ORDER BY code');
+                foreach($rows as $row) {
+                    printf("<option value=\"%s\">%s</option>", $row, $row);
+                }
+                break;
         }
     }
     function post($app, $params) {

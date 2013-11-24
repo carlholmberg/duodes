@@ -118,7 +118,11 @@ class Copy extends Controller {
                     $cop['uid'] = $c->user->id;
                     $cop['tid'] = $c->title->id;
                 }
+            } else {
+                if ($cop['user_id']) $cop['borrowed'] = 'Utlånad';
+                else $cop['borrowed'] = $cop['return_date'];
             }
+            
             if ($lvl == 4) {
                 $cop['bc_print'] = \R::relatedOne($c, 'barcode')? 1 : 0;
             }
@@ -126,7 +130,6 @@ class Copy extends Controller {
                 $cop['return'] = '{Return}';
                 $cop['delete'] = '{Delete}';
             }
-            
             $copies[] = $cop;
         }
         return $copies;
@@ -165,6 +168,8 @@ class Copy extends Controller {
                 unset($header['borrowed_by']);
                 unset($header['bc_print']);
                 unset($header['delete']);
+                $header['borrowed'] = array(
+                    'class' => 'group-false', 'name' => '{Borrowed}');
             }
         } else if ($for == 'user') {
             $header = array(

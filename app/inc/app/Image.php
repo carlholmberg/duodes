@@ -10,7 +10,7 @@
  */
 namespace app;
 
-class Image extends \app\Controller {
+class Image extends Controller {
     function get($app, $params) {
         if (isset($params['id'])) {
             $file = $params['id'];

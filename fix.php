@@ -88,9 +88,15 @@ switch($step) {
             $title->desc = $meta->desc;
             $title->keywords = $meta->keywords;
             $title->registered = '';
-            R::store($title);    
+            $borrowed = 0;
+	        foreach($title->ownCopy as $copy) {
+	            if ($copy->user) $borrowed += 1;
+	        }
+	        $title->borrowed = $borrowed;
+	        R::store($title);    
         }
         echo 'Titles complete';
+        echo '<a href="fix.php?do=borrowed">Step 5</a>';
         break;
         
     case 'borrowed':

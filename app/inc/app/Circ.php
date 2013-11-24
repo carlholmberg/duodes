@@ -10,7 +10,7 @@
  */
 namespace app;
 
-class Circ extends \app\ViewController {
+class Circ extends ViewController {
 
 
     function get($app, $params) {
@@ -101,8 +101,7 @@ class Circ extends \app\ViewController {
                     $app->reroute('/circ');
                 }
             }
-            
-            $app->set('SESSION.msg', 'Felaktig streckkod');
+            $this->addMessage('circ_b_wrong');
             $app->set('SESSION.circ', 'return');
             $app->reroute('/circ');
         } else {
@@ -127,7 +126,7 @@ class Circ extends \app\ViewController {
                 }
             }
             
-            $app->set('SESSION.msg', 'Felaktiga streckkoder');
+            $this->addMessage('circ_b_wrong');
             $app->set('SESSION.circ', 'borrow');
             $app->reroute('/circ');
         }

@@ -158,6 +158,18 @@ $(document).ready(function() {
         });
     }
     
+    if ($('.collection_list').length) {
+        $.get("ajax/collections-opt", function(html) {
+            $(".collection_list").append(html);
+        });
+    }
+    
+    if ($('.subject_list').length) {
+        $.get("ajax/codes", function(html) {
+            $(".subject_list").append(html);
+        });
+    }
+    
     if ($('#fixedcoll').length) {
         $.get("ajax/collections-fixed", function(html) {
             $("#fixedcoll").append(html);

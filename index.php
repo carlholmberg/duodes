@@ -41,14 +41,20 @@ $menu = array(
         )
     ),
     
-    array('link' => 'barcode',
-          'title' => '{Barcodes}',
-          'icon' => 'barcode',
-          'level' => 4),
-    array('link' => 'report',
-          'title' => '{Reports}',
+    array('title' => '{Print}/PDF',
           'icon' => 'file',
-          'level' => 3),
+          'level' => 4,
+          'submenu' => array(
+        array('link' => 'barcode',
+              'title' => '{Barcodes}',
+              'icon' => 'barcode',
+              'level' => 4),
+        array('link' => 'report',
+              'title' => '{Reports}',
+              'icon' => 'file',
+              'level' => 3)
+        )
+    ),
           
  /*   array('link' => 'batch',
           'title' => 'Batch',

@@ -27,7 +27,9 @@
 
                 <tr><td><span class="glyphicon glyphicon-list-alt"></span></td><td>Etiketter för hel basgrupp </td><td><select id="userlabels" name="userlables" class="class_list"><option value="all">alla</option></select></td><td><button class="btn"><span class="glyphicon glyphicon-print"></span></button></td></tr></form>
                 <form class="form-inline well" role="form" action="print/userlist" method="post">
-                <tr><td><span class="glyphicon glyphicon-list-alt"></span></td><td>Ultåningsista för hel basgrupp </td><td><select id="userlist" name="userlist" class="class_list"><option value="all">alla</option></select></td><td><button class="btn"><span class="glyphicon glyphicon-print"></span></button></td></tr></form>
+                <tr><td><span class="glyphicon glyphicon-list-alt"></span></td><td>Ultåningsista för hel basgrupp </td><td><select id="userlist" name="userlist" class="class_list"><option value="all">alla</option></select></td><td><button class="btn"><span class="glyphicon glyphicon-print"></span></button></td></tr>
+            
+                </form>
             </tbody>
             
         </table>
