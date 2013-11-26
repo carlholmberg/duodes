@@ -26,7 +26,7 @@
 
 
 <div class="container well">
-<h2>{Copies}</h2>
+<h2>{Units}</h2>
     <table class="tablesorter">
 	<thead>
 		<tr>

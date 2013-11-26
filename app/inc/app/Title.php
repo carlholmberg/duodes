@@ -236,9 +236,11 @@ class Title extends \app\ViewController {
         $title = \R::load('title', $params['id']);
         if ($title) {
             $data = serialize($title->export());
+            $this->addMessage('titel_del', array('title'=>$title->title, 'author'=>$title->author));
             new Log('delete', 'Deleted title "'. $title->title.'"', $data);
             \R::trashAll($title->ownCopy);
             \R::trash($title);
+            
         }
 
         echo $app->get('BASE').'/title/all';

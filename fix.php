@@ -113,9 +113,55 @@ switch($step) {
         echo 'Borrowed complete';
         break;
 
+    case 'code':
+        $default = array('H Sv' => 'Svensk skönlitteratur',
+                         'H En' => 'Engelsk skönlitteratur',
+                         'H Fr' => 'Fransk skönlitteratur',
+                         'H Ty' => 'Tysk skönlitteratur',
+                         'H Sp' => 'Spansk skönlitteratur',
+                         'Ma' => 'Matematik',
+                         'En' => 'Engelska',
+                         'Sv' => 'Svenska',
+                         'Fr' => 'Franska',
+                         'Sp' => 'Spanska',
+                         'Ty' => 'Tyska',
+                         'Ge' => 'Geografi',
+                         'Hi' => 'Historia',
+                         'Da' => 'Data',
+                         'Sh' => 'Samhällskunskap',
+                         'Ord' => 'Ordböcker',
+                         'Idr' => 'Idrott',
+                         'Kom' => 'Kommunikation',
+                         'Ke' => 'Kemi',
+                         'Jur' => 'Juridik',
+                         'Fy' => 'Fysik',
+                         'Bi' => 'Biologi');
+        foreach ($default as $code => $text) {
+            $c = R::findOne('code', ' code = ? ', array($code));
+            if (!$c) {
+                $c = R::dispense('code');
+                $c->code = $code;
+            }
+            $c->text = $text;
+            R::store($c);
+        }
+        echo 'Codes complete';
+        break;
+
+
 
     default:
-        echo '<a href="fix.php?do=coll">Step 1</a>';
         break;
 
 }
+
+echo '
+<h1>Do:</h1>
+<ul>
+    <li><a href="fix.php?do=coll">Step 1 (Collections)</a></li>
+    <li><a href="fix.php?do=user">Step 2 (Users)</a></li>
+    <li><a href="fix.php?do=copies">Step 3 (Copies)</a></li>
+    <li><a href="fix.php?do=titles">Step 4 (Titles inkl. Borrowed)</a></li>
+    <li><a href="fix.php?do=borrowed">Step 5 (Borrowed)</a></li>
+    <li><a href="fix.php?do=code">Step 6 (Codes)</a></li>
+</ul>';

@@ -50,6 +50,20 @@
         <!-- /cut:copy_del -->
         
         
+        <!-- cut:title_del -->
+        <div class="container alert alert-danger fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <p><span class="glyphicon glyphicon-exclamation-sign"></span> Raderade titel <strong>#titel#</strong> av <em>#author#</em></p>
+        </div>
+        <!-- /cut:title_del -->
+        
+        <!-- cut:coll_del -->
+        <div class="container alert alert-danger fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <p><span class="glyphicon glyphicon-exclamation-sign"></span> Raderade samilng <strong>#name#</strong></p>
+        </div>
+        <!-- /cut:coll_del -->
+        
         <!-- cut:report_none -->
         <div class="container alert alert-danger fade in">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>

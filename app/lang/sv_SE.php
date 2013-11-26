@@ -14,6 +14,7 @@ return array(
 	'New copies' => 'Nya kopior',
 	'Return date' => 'Återlämningsdatum',
 	'Copies' => 'Kopior',
+	'Units' => 'Enheter',
 	'Language' => 'Språk',
 	'Description' => 'Beskrivning',
 	'Code' => 'Ämne',

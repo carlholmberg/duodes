@@ -53,6 +53,9 @@ class Circ extends ViewController {
                 } else {
                     $ts = unserialize($copy->collection->value);
                     $copy->return_date = $ts[0]['ts'];
+                    foreach($ts as $t) {
+                        if (isset($t['default'])) $copy->return_date = $t['ts'];
+                    }
                 }
             }
         }
