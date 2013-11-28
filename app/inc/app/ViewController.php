@@ -44,7 +44,12 @@ class ViewController extends \app\Controller
     function buildCopyTable($header, $data) {
     
         foreach ($header as $key=>$val) {
-            $this->addPiece('page', 'hcell', 'hcell', $val);
+            $what = 'hcell';
+            if (isset($val['row-icon'])) {
+                $what = 'hicell';
+                $val['icon'] = $val['row-icon'];
+            }
+            $this->addPiece('page', $what, 'hcell', $val);
             $this->addPiece('page', 'fcell', 'fcell', $val);
         }
         $tpl = $this->loadTpl('tablesorter-row');

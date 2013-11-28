@@ -6,7 +6,7 @@ include('app/lib/rb.php');
 R::setup('sqlite:data/db.db');
 
 $step = isset($_GET['do'])? $_GET['do'] : 'first';
-    
+R::begin();
 switch($step) {
 
     case 'coll':
@@ -108,6 +108,7 @@ switch($step) {
 	            if ($copy->user) $borrowed += 1;
 	        }
 	        $title->borrowed = $borrowed;
+	        $title->total = count($title->ownCopy);
 	        R::store($title);
         }
         echo 'Borrowed complete';
@@ -154,7 +155,7 @@ switch($step) {
         break;
 
 }
-
+R::commit();
 echo '
 <h1>Do:</h1>
 <ul>

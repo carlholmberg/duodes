@@ -33,6 +33,11 @@
         <!-- cut:xeditable -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap-editable.css" />
         <script src="js/bootstrap-editable.min.js"></script>
+        
+        <script src="js/typeahead.min.js"></script>
+        <script src="js/typeaheadjs.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/typeahead.js-bootstrap.css" />
+        
         <link rel="stylesheet" type="text/css" href="css/select2/select2.css" />
         <link rel="stylesheet" type="text/css" href="css/select2/select2-bootstrap.css" />
         <script src="js/select2.js"></script>
@@ -120,6 +125,8 @@ $(document).ready(function() {
             language: 'sv'
         }
     });
+    
+   
 
 });
         

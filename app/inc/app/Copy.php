@@ -140,6 +140,7 @@ class Copy extends Controller {
         if ($copy) {
             $data = serialize($copy->export());
             new Log('delete', 'Deleted copy "'. $copy->barcode.'" for '.$copy->title->title, $data);
+            Title::updateBorrowed($copy->title);
             $this->addMessage('copy_del');
             \R::trash($copy);
         }

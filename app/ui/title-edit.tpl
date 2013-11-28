@@ -16,7 +16,7 @@
     </form>
     <h1 id="title" data-type="text" data-pk="#id#" data-original-title="{Title}" data-url="title/#id#" class="editable editable-click">#title#</h1>
     <div class="col-md-2">
-        <img id="cover" src="image/#isbn#" alt="Title image" />
+        <img id="cover" src="image/#image#" alt="Title image" />
         <p><strong>Antal: #total#</strong><br><em>(varav #borrowed# utlånade)</em></p>
     </div>
     <div class="col-md-5">
@@ -30,7 +30,7 @@
     <div class="col-md-5">
         <h5>{Publisher}</h5><p id="publisher" data-type="text" data-pk="#id#" data-original-title="{Publisher}" data-url="title/#id#" class="editable editable-click">#publisher#</p>
         <h5>{Year}</h5><p id="date" data-type="text" data-pk="#id#" data-original-title="{Year}" data-url="title/#id#" class="editable editable-click">#date#</p>
-        <h5>{Code}</h5><p id="code" data-type="text" data-pk="#id#" data-original-title="{Code}" data-url="title/#id#" class="editable editable-click">#code#</p>
+        <h5>{Code}</h5><p id="code" data-type="typeaheadjs" data-pk="#id#" data-original-title="{Code}" data-url="title/#id#" data-typeahead="{name: 'code', prefetch: 'ajax/codes_dataset'}" data-name="code" class="editable editable-click" data-value="#code#"></p>
             
         <h5>Länk:</h5><p><a href="#url#" title="Länk till post om titel">#url#</a></p>
         <h5>{Registered}</h5><p id="registered" data-type="date" data-pk="#id#" data-original-title="{Registered}" data-url="title/#id#" class="editable editable-click">#registered#</p>
@@ -46,8 +46,11 @@
 	<thead>
 		<tr>
 		    <!-- cut:hcell -->
-			<th class="#class#"><span class="glyphicon glyphicon-#icon#"></span>#name#</th>
+			<th class="#class#">#name#</th>
 			<!-- /cut:hcell -->
+			<!-- cut:hicell -->
+			<th class="#class#"><span class="glyphicon glyphicon-#icon#"></span>#name#</th>
+			<!-- /cut:hicell -->
 			<!-- paste:hcell -->
 	</thead>
 	<!-- paste:copies -->

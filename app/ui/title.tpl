@@ -1,7 +1,7 @@
 <div class="container well">
     <h1>#title#</h1>
     <div class="col-md-2">
-        <img id="cover" src="image/#isbn#" alt="Title image" />
+        <img id="cover" src="image/#image#" alt="Title image" />
         <p><strong>Antal: #total#</strong><br><em>(varav #borrowed# utlånade)</em></p>
     </div>
     <div class="col-md-5">
@@ -31,9 +31,11 @@
 	<thead>
 		<tr>
 		    <!-- cut:hcell -->
-			<th class="#class#"><span class="glyphicon glyphicon-#icon#"></span>#name#</th>
+			<th class="#class#">#name#</th>
 			<!-- /cut:hcell -->
-			<!-- paste:hcell -->
+			<!-- cut:hicell -->
+			<th class="#class#"><span class="glyphicon glyphicon-#icon#"></span>#name#</th>
+			<!-- /cut:hicell --><!-- paste:hcell -->
 	</thead>
 	<!-- paste:copies -->
 	<tfoot>

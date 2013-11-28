@@ -65,15 +65,15 @@ class Title extends \app\ViewController {
                 
                 $title = \R::load('title', $id);
                 if ($title) {
+                    $slots = array('id' => $id, 'title' => '', 'author' => '', 'isbn' => '', 'desc' => '', 'keywords' => '', 'publisher' => '',  'date' => '', 'code' => '', 'url' => '', 'registered' => date('Y-m'), 'total' => '0', 'borrowed' => '0', 'lang' => '', 'image' => '');
+                    
                     if ($this->hasLevel(4)) {
                         $this->setPage('title-edit');
                         $this->addPiece('main', 'xeditable', 'extrahead');
                     } else {
                         $this->setPage('title');
                     }
-
-                    $this->slots['id'] = $id;
-                    $slots = array('title' => '', 'author' => '', 'isbn' => '', 'desc' => '', 'keywords' => '', 'publisher' => '',  'date' => '', 'code' => '', 'url' => '', 'registered' => date('Y-m'), 'total' => '0', 'borrowed' => '0', 'lang' => '');
+                    
                     $this->addSlots($slots);
                     
                     if ($app->get('SESSION.newtitle')) {
@@ -84,6 +84,8 @@ class Title extends \app\ViewController {
                     } else {
                         $copies = Copy::getCopies($title, $this->lvl);
                         $data = $title->export(false, false, true);
+                        $data['image'] = $data['isbn'];
+                        if (!is_numeric($data['isbn'])) $data['image'] = 'missing';
                         $this->addSlots($data);
                         if (isset($this->slots['title'])) {
                             $this->slots['pagetitle'] = $this->slots['title'];
@@ -212,6 +214,7 @@ class Title extends \app\ViewController {
 	        }
 	    }
 	    $title->borrowed = $borrowed;
+	    $title->total = count($title->ownCopy);
 	    \R::store($title);
 	}
     

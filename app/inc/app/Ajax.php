@@ -73,6 +73,9 @@ class Ajax extends \app\Controller {
                     printf("<option value=\"%s\">%s</option>", $row, $row);
                 }
                 break;
+            case 'codes_dataset':
+                print json_encode(Code::getCodes());
+                break;
         }
     }
     function post($app, $params) {
